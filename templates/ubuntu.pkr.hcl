@@ -83,6 +83,9 @@ source "qemu" "custom_image" {
     accelerator      = "kvm" # use none here if not using KVM
     disk_size        = "30G"
     disk_compression = true
+    qemuargs = [
+        [ "-cpu", "host" ],
+    ]
 
     #efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE.fd"
     #efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS.fd"
