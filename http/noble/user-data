@@ -24,7 +24,7 @@ autoinstall:
         - user1:packerubuntu
     users:
       - name: admin
-        passwd: $6$xyz$74AlwKA3Z5n2L6ujMzm/zQXHCluA4SRc2mBfO2/O5uUc2yM2n2tnbBMi/IVRLJuKwfjrLZjAT7agVfiK7arSy/
+        passwd: f11e44d1f72eccd7276e94dc94af669715082c8b32732c91f3efa7e03a3ce409c2bc179219b9c2c60bb31d35715c0ba3f76fa4c5f754347e11f0344a16e95b40
         groups: [adm, cdrom, dip, plugdev, lxd, sudo]
         lock-passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
