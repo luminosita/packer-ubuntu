@@ -79,7 +79,7 @@ source "qemu" "custom_image" {
 
     # QEMU specific configuration
     cpus             = 2
-    memory           = 4096
+    memory           = 2048
     accelerator      = "kvm" # use none here if not using KVM
     disk_size        = "30G"
     disk_compression = true
