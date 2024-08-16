@@ -56,7 +56,7 @@ source "qemu" "custom_image" {
     vm_name         = "${local.vm_name}"
     
     iso_urls        = [
-        "iso/${var.ubuntu_iso_file},
+        "iso/${var.ubuntu_iso_file}",
         "https://releases.ubuntu.com/${var.ubuntu_version}/${var.ubuntu_iso_file}"
         ]
     iso_checksum    = "file:https://releases.ubuntu.com/${var.ubuntu_version}/SHA256SUMS"
