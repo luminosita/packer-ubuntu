@@ -53,10 +53,14 @@ locals {
 }
 
 source "qemu" "custom_image" {
-    vm_name     = "${local.vm_name}"
+    vm_name         = "${local.vm_name}"
     
-    iso_url      = "https://releases.ubuntu.com/${var.ubuntu_version}/${var.ubuntu_iso_file}"
-    iso_checksum = "file:https://releases.ubuntu.com/${var.ubuntu_version}/SHA256SUMS"
+    iso_urls        = [
+        "iso/${var.ubuntu_iso_file},
+        "https://releases.ubuntu.com/${var.ubuntu_version}/${var.ubuntu_iso_file}"
+        ]
+    iso_checksum    = "file:https://releases.ubuntu.com/${var.ubuntu_version}/SHA256SUMS"
+    iso_target_path = "iso"
 
     # Location of Cloud-Init / Autoinstall Configuration files
     # Will be served via an HTTP Server from Packer
