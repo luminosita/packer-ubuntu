@@ -78,7 +78,7 @@ source "qemu" "custom_image" {
     boot_wait = "5s"
 
     # QEMU specific configuration
-    cpus             = 4
+    cpus             = 2
     memory           = 4096
     accelerator      = "kvm" # use none here if not using KVM
     disk_size        = "30G"

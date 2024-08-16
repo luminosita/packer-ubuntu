@@ -46,7 +46,7 @@ source "qemu" "provision_source" {
     disk_image      = true
     disk_compression = true
     memory          = 4096
-    cpus            = 4
+    cpus            = 2
     accelerator     = "kvm"
     disk_size       = "30G"
     qemuargs        = [
