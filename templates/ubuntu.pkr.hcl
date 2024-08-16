@@ -83,6 +83,7 @@ source "qemu" "custom_image" {
     accelerator      = "kvm" # use none here if not using KVM
     disk_size        = "30G"
     disk_compression = true
+    headless         = true
     qemuargs = [
         [ "-cpu", "host" ],
     ]
