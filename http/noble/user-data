@@ -26,10 +26,10 @@ autoinstall:
       - name: admin
         passwd: $6$hQg57EkPBTIY0fvp$0P8Cnbj2NsGL09FlgYakZWEsy9OmkNKgpXA7p9rSk/DUaeFGHCwmz7ZoAl28sc/5WuJ92HFMk1sTbSE42xFaD0
         groups: [adm, cdrom, dip, plugdev, lxd, sudo]
-        lock-passwd: false
+        lock_passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash
       - name: user1
         plain_text_passwd: packerubuntu
-        lock-passwd: false
+        lock_passwd: false
         shell: /bin/bash
