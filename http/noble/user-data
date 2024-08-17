@@ -10,23 +10,12 @@ autoinstall:
   locale: en_US
   keyboard:
     layout: us
-    # network:
-    #     network:
-    #         version: 2
-    #         ethernets:
-    #             enp0s25:
-    #                dhcp4: yes
-    #             enp3s0: {}
-    #             enp4s0: {}
-    #         bonds:
-    #             bond0:
-    #                 dhcp4: yes
-    #                 interfaces:
-    #                     - enp3s0
-    #                     - enp4s0
-    #                 parameters:
-    #                     mode: active-backup
-    #                     primary: enp3s0
+  network:
+    network:
+      version: 2
+      ethernets:
+        eth0:
+          dhcp4: yes
     # proxy: http://squid.internal:3128/
     # apt:
     #     primary:
