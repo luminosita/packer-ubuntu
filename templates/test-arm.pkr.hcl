@@ -52,15 +52,15 @@ source "qemu" "provision_source" {
     accelerator      = "hvf"
     disk_size       = "30G"
     qemuargs = [
-        [ "-cpu", "host" ],
+        ["-cpu", "host" ],
         ["-bios", "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"],                                         
         ["-serial", "mon:stdio"],
         ["-device", "virtio-net,netdev=forward,id=net0"],
         ["-netdev", "user,hostfwd=tcp::{{ .SSHHostPort }}-:22,id=forward"],
-        // ["-boot", "strict=off"],
-        // ["-device", "qemu-xhci"],
-        // ["-device", "usb-kbd"],
-        // ["-device", "virtio-gpu-pci"],     
+        ["-boot", "strict=off"],
+        ["-device", "qemu-xhci"],
+        ["-device", "usb-kbd"],
+        ["-device", "virtio-gpu-pci"],     
     ]
     // qemuargs        = [
     //     ["-bios", "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}/OVMF_CODE.fd"],

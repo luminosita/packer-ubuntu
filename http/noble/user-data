@@ -28,12 +28,12 @@ autoinstall:
     hostname: packerubuntu
     package_upgrade: true
     timezone: Europe/Berlin
+    chpasswd:
+      expire: false
+      users:
+        - {name: root, password: packerubuntu, type: text}
+    ssh_pwauth: false
     users:
-      - name: root
-        passwd: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
-        lock_passwd: false
-        sudo: ALL=(ALL) NOPASSWD:ALL
-        shell: /bin/bash
       - name: admin
         passwd: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
         groups: [adm, cdrom, dip, plugdev, lxd, sudo]
