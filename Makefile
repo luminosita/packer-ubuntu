@@ -15,9 +15,11 @@
 .PHONY: build-focal build-jammy validate-packer validate-cloudinit validate
 
 TEMPLATE_FILE:=./templates/ubuntu.pkr.hcl
+ARM_TEMPLATE_FILE:=./templates/ubuntu-arm.pkr.hcl
 FOCAL_VARS_FILE:=./vars/focal.pkrvars.hcl
 JAMMY_VARS_FILE:=./vars/jammy.pkrvars.hcl
 NOBLE_VARS_FILE:=./vars/noble.pkrvars.hcl
+NOBLE_ARM_VARS_FILE:=./vars/noble-arm.pkrvars.hcl
 TEST_TEMPLATE_FILE:=./templates/test.pkr.hcl
 
 init:
@@ -40,6 +42,9 @@ build-jammy: validate-jammy
 
 build-noble: init
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${TEMPLATE_FILE}
+
+build-noble-arm: init
+	PACKER_LOG=1 packer build -force -var-file=${NOBLE_ARM_VARS_FILE} ${ARM_TEMPLATE_FILE}
 
 validate-focal: init
 	$(info PACKER: Validating Template with Ubuntu 20.04 (Focal Fossa) Packer Variables)

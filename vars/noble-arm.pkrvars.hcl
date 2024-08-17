@@ -15,4 +15,4 @@
 ## Packer Variables for Ubuntu 24.04 Live Server (Noble Numbat)
 ubuntu_distro	= "noble"
 ubuntu_version  = "24.04"
-ubuntu_iso_file = "ubuntu-24.04-live-server-amd64.iso"
+ubuntu_iso_file = "ubuntu-24.04-live-server-arm64.iso"
