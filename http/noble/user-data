@@ -1,21 +1,21 @@
 #cloud-config
 autoinstall:
   version: 1
-  reporting:
-    hook:
-      type: webhook
-      endpoint: http://159.65.126.80:8090/log
+  # reporting:
+  #   hook:
+  #     type: webhook
+  #     endpoint: http://159.65.126.80:8090/log
 #    early-commands:
 #        - ping -c1 198.162.1.1
   locale: en_US
   keyboard:
     layout: us
-  network:
-    network:
-      version: 2
-      ethernets:
-        eth0:
-          dhcp4: yes
+  # network:
+  #   network:
+  #     version: 2
+  #     ethernets:
+  #       eth0:
+  #         dhcp4: yes
     # proxy: http://squid.internal:3128/
     # apt:
     #     primary:
@@ -29,14 +29,14 @@ autoinstall:
     #     layout:
     #         name: lvm
   identity:
-      hostname: packerubuntu
-      username: admin
-      password: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
+    hostname: packerubuntu
+    username: admin
+    password: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
   ssh:
-      install-server: yes
-        # authorized-keys:
-        #   - $key
-      allow-pw: yes
+    install-server: yes
+      # authorized-keys:
+      #   - $key
+    allow-pw: yes
     # snaps:
     #     - name: go
     #       channel: 1.20/stable
@@ -47,7 +47,7 @@ autoinstall:
     #     - libreoffice
     #     - dns-server^
   user-data:
-      disable_root: false
+    disable_root: false
     # late-commands:
     #     - sed -ie 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=30/' /target/etc/default/grub
     # error-commands:

@@ -67,13 +67,13 @@ source "qemu" "custom_image" {
     http_directory = "http/${var.ubuntu_distro}"
 
     # Boot Commands when Loading the ISO file with OVMF.fd file (Tianocore) / GrubV2
-    boot_command = [
-        "<spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait>",
-        "e<wait>",
-        "<down><down><down><end>",
-        " autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-        "<f10>"
-    ]
+    boot_command: [
+        "c",
+        "linux /casper/vmlinuz --- autoinstall ds='nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/' ",
+        "<enter><wait>",
+        "initrd /casper/initrd<enter><wait>",
+        "boot<enter>"
+    ],
     
     boot_wait = "5s"
 
