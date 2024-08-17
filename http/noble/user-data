@@ -27,7 +27,7 @@ autoinstall:
     - sed -ie 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /target/etc/ssh/sshd_config
     - sed -ie 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /target/etc/ssh/sshd_config
     - sed -ie 's/#UseDNS no/UseDNS no/' /target/etc/ssh/sshd_config
-    - sed -ie 's/enp0s1/enp0s3/' /target/etc/netplan/50-cloud-init.yaml
+#    - sed -ie 's/enp0s1/enp0s3/' /target/etc/netplan/50-cloud-init.yaml
   
   #  - curtin in-target -- update-grub2
     # virtual package is required for some cloud images. Lack of it causes failure in communication.
