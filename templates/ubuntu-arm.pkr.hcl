@@ -88,7 +88,7 @@ source "qemu" "custom_image" {
     disk_compression = true
     disk_interface   = "virtio"
     qemuargs = [
-        [ "-cpu", "host" ],
+        ["-cpu", "host"],
         ["-bios", "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"],                                         
         ["-boot", "strict=off"],
         ["-device", "qemu-xhci"],
@@ -105,7 +105,7 @@ source "qemu" "custom_image" {
 
     # SSH configuration so that Packer can log into the Image
     ssh_password    = "packerubuntu"
-    ssh_username    = "root"
+    ssh_username    = "admin"
     ssh_timeout     = "20m"
     shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
     headless        = true # NOTE: set this to true when using in CI Pipelines
@@ -115,11 +115,11 @@ build {
     name    = "custom_build"
     sources = [ "source.qemu.custom_image" ]
 
-    provisioner "file" {
-        source      = "/var/log/installer/autoinstall-user-data"
-        destination = "${local.output_dir}/${local.vm_name}/autoinstall-user-data.log"
-        direction   = "download"
-    }
+    // provisioner "file" {
+    //     source      = "/var/log/installer/autoinstall-user-data"
+    //     destination = "${local.output_dir}/${local.vm_name}/autoinstall-user-data.log"
+    //     direction   = "download"
+    // }
    
     # Wait till Cloud-Init has finished setting up the image on first-boot
     provisioner "shell" {

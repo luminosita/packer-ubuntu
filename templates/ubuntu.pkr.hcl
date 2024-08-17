@@ -97,7 +97,7 @@ source "qemu" "custom_image" {
 
     # SSH configuration so that Packer can log into the Image
     ssh_password    = "packerubuntu"
-    ssh_username    = "root"
+    ssh_username    = "admin"
     ssh_timeout     = "20m"
     shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
     headless        = true # NOTE: set this to true when using in CI Pipelines
@@ -114,11 +114,11 @@ build {
     }
 
     # Wait till Cloud-Init has finished setting up the image on first-boot
-    provisioner "shell" {
-        inline = [
-            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" 
-        ]
-    }
+    // provisioner "shell" {
+    //     inline = [
+    //         "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" 
+    //     ]
+    // }
 
     # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
     post-processor "checksum" {

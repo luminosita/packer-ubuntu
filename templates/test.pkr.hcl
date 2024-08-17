@@ -59,7 +59,7 @@ source "qemu" "provision_source" {
 
     shutdown_command = "echo 'packerubuntu' | sudo shutdown -P now"
     shutdown_timeout = "15m"
-    ssh_username     = "admin"
+    ssh_username     = "root"
     ssh_password     = "packerubuntu"
     ssh_timeout      = "60m"
     headless         = true
