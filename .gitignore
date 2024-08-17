@@ -10,3 +10,4 @@ crash.log
 # Generated Images
 output/
 iso/
+.DS_Store

@@ -78,6 +78,7 @@ source "qemu" "custom_image" {
     boot_wait = "5s"
 
     # QEMU specific configuration
+    format          = "qcow2"
     cpus             = 2
     memory           = 2048
     accelerator      = "kvm" # use none here if not using KVM
@@ -96,7 +97,7 @@ source "qemu" "custom_image" {
 
     # SSH configuration so that Packer can log into the Image
     ssh_password    = "packerubuntu"
-    ssh_username    = "admin"
+    ssh_username    = "root"
     ssh_timeout     = "20m"
     shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
     headless        = true # NOTE: set this to true when using in CI Pipelines
@@ -106,12 +107,12 @@ build {
     name    = "custom_build"
     sources = [ "source.qemu.custom_image" ]
 
-#    provisioner "file" {
-#        source      = "/var/log/installer/autoinstall-user-data"
-#        destination = "autoinstall-user-data.log"
-#        direction   = "download"
-#    }
-   
+    provisioner "file" {
+        source      = "/var/log/installer/autoinstall-user-data"
+        destination = "${local.output_dir}/${local.vm_name}/autoinstall-user-data.log"
+        direction   = "download"
+    }
+
     # Wait till Cloud-Init has finished setting up the image on first-boot
     provisioner "shell" {
         inline = [

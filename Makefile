@@ -21,6 +21,7 @@ JAMMY_VARS_FILE:=./vars/jammy.pkrvars.hcl
 NOBLE_VARS_FILE:=./vars/noble.pkrvars.hcl
 NOBLE_ARM_VARS_FILE:=./vars/noble-arm.pkrvars.hcl
 TEST_TEMPLATE_FILE:=./templates/test.pkr.hcl
+TEST_ARM_TEMPLATE_FILE:=./templates/test-arm.pkr.hcl
 
 init:
 	packer init ${TEMPLATE_FILE}
@@ -33,6 +34,9 @@ test-jammy: validate-jammy
 
 test-noble: init
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${TEST_TEMPLATE_FILE}
+
+test-noble-arm: init
+	PACKER_LOG=1 packer build -force -var-file=${NOBLE_ARM_VARS_FILE} ${TEST_ARM_TEMPLATE_FILE}
 
 build-focal: init
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${FOCAL_VARS_FILE} ${TEMPLATE_FILE}
