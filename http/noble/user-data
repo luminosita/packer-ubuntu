@@ -30,8 +30,8 @@ autoinstall:
     #         name: lvm
   identity:
       hostname: packerubuntu
-      username: packerubuntu
-      password: $6$hQg57EkPBTIY0fvp$0P8Cnbj2NsGL09FlgYakZWEsy9OmkNKgpXA7p9rSk/DUaeFGHCwmz7ZoAl28sc/5WuJ92HFMk1sTbSE42xFaD0
+      username: admin
+      password: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
   ssh:
       install-server: yes
         # authorized-keys:
