@@ -11,7 +11,7 @@ autoinstall:
     disable_root: false
     preserve_hostname: false
     hostname: packerubuntu
-    package_upgrade: false #TODO XXX
+    package_upgrade: true
     timezone: Europe/Berlin
     chpasswd:
       list: |
@@ -20,7 +20,8 @@ autoinstall:
     # runcmd:
     #   - [systemctl, enable, --now, ssh]
     #   - [systemctl, restart, ssh]
-    #   - [netplan, apply]
+      # - [sed, -ie, 's/enp0s3/enp0s1/', /etc/netplan/50-cloud-init.yaml]
+      # - [netplan, apply]
   late-commands:
     - sed -ie 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /target/etc/ssh/sshd_config
     - sed -ie 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /target/etc/ssh/sshd_config
