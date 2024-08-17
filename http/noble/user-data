@@ -29,10 +29,9 @@ autoinstall:
     package_upgrade: true
     timezone: Europe/Berlin
     chpasswd:
+      list: |
+        root:packerubuntu
       expire: false
-      users:
-        - {name: root, password: packerubuntu, type: text}
-    ssh_pwauth: false
     users:
       - name: admin
         passwd: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
