@@ -85,7 +85,8 @@ source "qemu" "custom_image" {
     disk_size        = "30G"
     disk_compression = true
     qemuargs = [
-        [ "-cpu", "host" ],
+        ["-cpu", "host" ],
+        ["-bios", "/usr/share/ovmf/OVMF.fd"]
     ]
 
     #efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE.fd"
