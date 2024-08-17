@@ -47,7 +47,7 @@ source "qemu" "provision_source" {
     iso_checksum    = "none"
     disk_image      = true
     disk_compression = true
-    memory          = 4096
+    memory          = 2048
     cpus            = 2
     accelerator      = "hvf"
     disk_size       = "30G"

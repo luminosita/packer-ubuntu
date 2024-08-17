@@ -29,22 +29,19 @@ autoinstall:
     package_upgrade: true
     timezone: Europe/Berlin
     chpasswd:
-      list: |
-        root:packerubuntu
+      users:
+        - name: root
+          password: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
       expire: false
-    users:
-      - name: admin
-        passwd: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
-        groups: [adm, cdrom, dip, plugdev, lxd, sudo]
-        lock_passwd: false
-        sudo: ALL=(ALL) NOPASSWD:ALL
-        shell: /bin/bash
   late-commands:
     #- echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
     #- sed -ie 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 ipv6.disable=1 biosdevname=0 elevator=noop"/' /target/etc/default/grub
     - sed -ie 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /target/etc/ssh/sshd_config
+    - sed -ie 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /target/etc/ssh/sshd_config
     - sed -ie 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /target/etc/ssh/sshd_config
     - sed -ie 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /target/etc/ssh/sshd_config
+    - curtin in-target -- systemctl enable --now ssh
+    - curtin in-target -- systemctl restart ssh
   #  - curtin in-target -- update-grub2
     # virtual package is required for some cloud images. Lack of it causes failure in communication.
 #    - curtin in-target -- apt-get -y install linux-cloud-tools-virtual||true
