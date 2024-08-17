@@ -117,7 +117,7 @@ build {
 
     // provisioner "file" {
     //     source      = "/var/log/installer/autoinstall-user-data"
-    //     destination = "${local.output_dir}/${local.vm_name}/autoinstall-user-data.log"
+    //     destination = "${local.output_dir}/${local.vm_name}.autoinstall-user-data.log"
     //     direction   = "download"
     // }
    
