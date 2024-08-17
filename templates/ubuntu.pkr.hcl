@@ -106,11 +106,11 @@ build {
     name    = "custom_build"
     sources = [ "source.qemu.custom_image" ]
 
-    provisioner "file" {
-        source      = "/var/log/installer/autoinstall-user-data"
-        destination = "autoinstall-user-data.log"
-        direction   = "download"
-    }
+#    provisioner "file" {
+#        source      = "/var/log/installer/autoinstall-user-data"
+#        destination = "autoinstall-user-data.log"
+#        direction   = "download"
+#    }
    
     # Wait till Cloud-Init has finished setting up the image on first-boot
     provisioner "shell" {

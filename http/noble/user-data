@@ -35,7 +35,7 @@ autoinstall:
     users:
       - name: admin
         passwd: $6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
-        groups: [adm, cdrom, dip, plugdev, lxd, sudo]
+        groups: [adm, cdrom, dip, plugdev, lxd, sudo, wheel]
         lock_passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash

@@ -1,3 +1,17 @@
+# Install Packer
+
+```bash
+$ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+$ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+$ sudo apt-get update && sudo apt-get install packer
+```
+
+# Install Qemu System 
+
+```bash
+$ sudo apt install qemu-system
+```
+
 # packer-ubuntu-server-uefi
 Templates for creating Ubuntu Live Server Images with Packer + QEMU + Autoinstall (cloud-init)
 
