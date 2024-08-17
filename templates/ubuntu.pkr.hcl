@@ -73,7 +73,7 @@ source "qemu" "custom_image" {
         "<enter><wait>",
         "initrd /casper/initrd<enter><wait>",
         "boot<enter>"
-    ],
+    ]
     
     boot_wait = "5s"
 
