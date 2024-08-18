@@ -3,4 +3,4 @@
 sed -i -e '/GRUB_CMDLINE_LINUX/ s:"$: net.ifnames=0":' /etc/default/grub
 /sbin/grub-mkconfig -o /boot/grub/grub.cfg
 
-sed -ie 's/enp0s1/eth0/' /etc/netplan/50-cloud-init.yaml
+sed -ie 's/enp0s3/eth0/' /etc/netplan/50-cloud-init.yaml
