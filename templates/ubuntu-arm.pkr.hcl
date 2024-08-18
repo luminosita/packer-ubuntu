@@ -71,7 +71,7 @@ source "qemu" "custom_image" {
         "c",
         "linux /casper/vmlinuz --- autoinstall ds='nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/' ",
         "<enter><wait>",
-        "initrd /casper/initrd<enter><wait>",
+        "initrd /casper/initrd <enter><wait>",
         "boot<enter>"
     ]
     
@@ -80,10 +80,11 @@ source "qemu" "custom_image" {
     # QEMU specific configuration
     qemu_binary      = "qemu-system-aarch64"
     machine_type     = "virt"
-    format          = "qcow2"
+    format           = "raw"
     cpus             = 2
     memory           = 2048
     accelerator      = "hvf"
+    net_device       = "virtio-net"
     disk_size        = "30G"
     disk_compression = true
     disk_interface   = "virtio"
@@ -124,7 +125,14 @@ build {
     # Wait till Cloud-Init has finished setting up the image on first-boot
     provisioner "shell" {
         inline = [
-            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" 
+            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done",
+        ]
+    }
+
+    provisioner "shell" {
+        scripts = [
+            "scripts/sshd.sh",
+            "scripts/cln.sh"
         ]
     }
 

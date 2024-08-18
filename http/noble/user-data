@@ -17,25 +17,4 @@ autoinstall:
       list: |
         root:$6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
       expire: false
-    # runcmd:
-    #   - [systemctl, enable, --now, ssh]
-    #   - [systemctl, restart, ssh]
-      # - [sed, -ie, 's/enp0s3/enp0s1/', /etc/netplan/50-cloud-init.yaml]
-      # - [netplan, apply]
-  late-commands:
-    - sed -ie 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /target/etc/ssh/sshd_config
-    - sed -ie 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /target/etc/ssh/sshd_config
-    - sed -ie 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /target/etc/ssh/sshd_config
-    - sed -ie 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /target/etc/ssh/sshd_config
-    - sed -ie 's/#UseDNS no/UseDNS no/' /target/etc/ssh/sshd_config
-#    - sed -ie 's/enp0s1/enp0s3/' /target/etc/netplan/50-cloud-init.yaml
-  
-  #  - curtin in-target -- update-grub2
-    # virtual package is required for some cloud images. Lack of it causes failure in communication.
-#    - curtin in-target -- apt-get -y install linux-cloud-tools-virtual||true
- #   - curtin in-target -- systemctl enable qemu-guest-agent
-    # late-commands:
-    #     - sed -ie 's/GRUB_TIMEOUT=.:*/GRUB_TIMEOUT=30/' /target/etc/default/grub
-    # error-commands:
-    #     - tar c /var/log/installer | nc 192.168.0.1 1000
 

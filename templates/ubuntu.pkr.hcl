@@ -121,6 +121,13 @@ build {
         ]
     }
 
+    provisioner "shell" {
+        scripts = [
+            "scripts/sshd.sh",
+            "scripts/cln.sh"
+        ]
+    }
+
     # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
     post-processor "checksum" {
         checksum_types      = [ "sha256" ]
