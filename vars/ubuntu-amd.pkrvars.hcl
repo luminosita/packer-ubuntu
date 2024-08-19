@@ -19,6 +19,6 @@ ubuntu_qemuargs         = [
 ]
 
 ubuntu_qemu_binary      = "qemu-system-x86_64"
-ubuntu_machine_type     = "virt"
+ubuntu_machine_type     = "pc-q35"
 ubuntu_accelerator      = "kvm"
 
