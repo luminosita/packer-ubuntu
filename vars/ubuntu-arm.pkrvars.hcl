@@ -13,6 +13,16 @@
 #  limitations under the License.
 
 ## Packer Variables for Ubuntu 24.04 Live Server (Noble Numbat)
-ubuntu_distro	= "noble"
-ubuntu_version  = "24.04"
-ubuntu_iso_file = "ubuntu-24.04-live-server-arm64.iso"
+ubuntu_qemuargs         = [
+    ["-cpu", "host"],
+    ["-bios", "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"],                                         
+    ["-boot", "strict=off"],
+    ["-device", "qemu-xhci"],
+    ["-device", "usb-kbd"],
+    ["-device", "virtio-gpu-pci"],     
+]
+
+ubuntu_qemu_binary      = "qemu-system-aarch64"
+ubuntu_machine_type     = "virt"
+ubuntu_accelerator      = "hvf"
+

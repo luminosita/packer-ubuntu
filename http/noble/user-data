@@ -8,14 +8,14 @@ autoinstall:
     install-server: yes
     allow-pw: yes
   user-data:
-    disable_root: false
     preserve_hostname: false
     hostname: packerubuntu
     package_upgrade: true
     timezone: Europe/Berlin
-    chpasswd:
-      list: |
-        root:$6$OJcm.7n9o62RqLEl$iYVzReRGY6ExYbPb6ql/xeo56y5IUVR/GjN7JMlO.C3hsQwxgwmFe9M0J3Ea2N.wzbHraZzr69adTDvA0WeyF/
-      expire: false
-  late-commands:
-    - sed -ie 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /target/etc/ssh/sshd_config
+    users:
+      - name: packer
+        passwd: $6$1H8zzNNDqbcs4Aoc$fzrxqhSmaSdzS.FhQEldGy02Nrx4oDkIX3ApET8OWRtOSncyqBoo556II7K/VfvSTWjvi/MV/NgOBTezNPmxh.
+        groups: [adm, cdrom, dip, plugdev, lxd, sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash 

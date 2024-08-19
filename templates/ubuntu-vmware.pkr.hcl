@@ -44,12 +44,39 @@ variable "host_distro" {
     default = "manjaro"
 }
 
+variable "ubuntu_iso_path" {
+    type = string
+}
+
+variable "ubuntu_iso_checksum" {
+    type = string
+}
+
+variable "ubuntu_qemuargs" {
+    type    = list(list(string))
+    default = []
+}
+
+variable "ubuntu_qemu_binary" {      
+    type = string
+}
+
+variable "ubuntu_machine_type" {     
+    type = string
+}
+
+variable "ubuntu_accelerator" {
+    type = string
+}
+
 locals {
     vm_name = "${var.vm_template_name}-${var.ubuntu_version}"
     output_dir = "output/${local.vm_name}"
     ovmf_prefix = {
       "manjaro" = "x64/"
     }
+    ssh_username = "packer"
+    ssh_password = "packer"
 }
 
 source "qemu" "custom_image" {
@@ -57,9 +84,9 @@ source "qemu" "custom_image" {
     
     iso_urls        = [
         "iso/${var.ubuntu_iso_file}",
-        "https://cdimage.ubuntu.com/releases/${var.ubuntu_version}/release/${var.ubuntu_iso_file}"
+        "${var.ubuntu_iso_path}"
         ]
-    iso_checksum    = "file:https://cdimage.ubuntu.com/releases/${var.ubuntu_version}/release/SHA256SUMS"
+    iso_checksum    = "${var.ubuntu_iso_checksum}"
     iso_target_path = "iso"
 
     # Location of Cloud-Init / Autoinstall Configuration files
@@ -78,24 +105,17 @@ source "qemu" "custom_image" {
     boot_wait = "5s"
 
     # QEMU specific configuration
-    qemu_binary      = "qemu-system-aarch64"
-    machine_type     = "virt"
+    qemu_binary      = "${var.ubuntu_qemu_binary}"
+    machine_type     = "${var.ubuntu_machine_type}"
     format           = "raw"
     cpus             = 2
     memory           = 2048
-    accelerator      = "hvf"
+    accelerator      = "${var.ubuntu_accelerator}"
     net_device       = "virtio-net"
     disk_size        = "30G"
     disk_compression = true
     disk_interface   = "virtio"
-    qemuargs = [
-        ["-cpu", "host"],
-        ["-bios", "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"],                                         
-        ["-boot", "strict=off"],
-        ["-device", "qemu-xhci"],
-        ["-device", "usb-kbd"],
-        ["-device", "virtio-gpu-pci"],     
-    ]
+    qemuargs         = "${var.ubuntu_qemuargs}"
 
     #efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE.fd"
     #efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS.fd"
@@ -105,10 +125,10 @@ source "qemu" "custom_image" {
     output_directory = "${local.output_dir}"
 
     # SSH configuration so that Packer can log into the Image
-    ssh_password    = "packerubuntu"
-    ssh_username    = "root"
+    ssh_password    = "${local.ssh_password}"
+    ssh_username    = "${local.ssh_username}"
     ssh_timeout     = "20m"
-    shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
+    shutdown_command = "echo '${local.ssh_password}' | sudo -S shutdown -P now"
     headless        = true # NOTE: set this to true when using in CI Pipelines
 }
 
@@ -116,23 +136,54 @@ build {
     name    = "custom_build"
     sources = [ "source.qemu.custom_image" ]
 
+    provisioner "shell" {
+        inline = [
+            "mkdir /tmp/download",
+            "sudo mv /var/log/installer/autoinstall-user-data /tmp/download",
+            "sudo mv /var/log/cloud-init-output.log /tmp/download",
+            "sudo chown ${local.ssh_username} -R /tmp/download"
+            ]
+    }
+
+    provisioner "shell-local" {
+        inline = ["mkdir ${local.output_dir}/${local.vm_name}-logs"]
+    }
+
     provisioner "file" {
-        source      = "/var/log/installer/autoinstall-user-data"
-        destination = "${local.output_dir}/${local.vm_name}.autoinstall-user-data.log"
+        sources      = [
+            "/tmp/download/autoinstall-user-data",
+            "/tmp/download/cloud-init-output.log"
+        ]
+        destination = "${local.output_dir}/${local.vm_name}-logs/"
         direction   = "download"
     }
-   
+
     # Wait till Cloud-Init has finished setting up the image on first-boot
     provisioner "shell" {
         inline = [
-            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done",
+            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" 
+        ]
+    }
+
+    provisioner "file" {
+        content = templatefile("../files/netplan.tpl", {
+            NET_INT = "eth0",
+        })
+        destination = "/tmp/50-cloud-init.yaml"
+    }
+
+    provisioner "shell" {
+         inline = [
+        "sudo mv /tmp/50-cloud-init.yaml /etc/netplan/",
+        "sudo chown root:root /etc/netplan/50-cloud-init.yaml"
         ]
     }
 
     provisioner "shell" {
         scripts = [
             "scripts/sshd.sh",
-            "scripts/cln.sh"
+#            "scripts/network.sh",
+            "scripts/cleanup.sh"
         ]
     }
 
