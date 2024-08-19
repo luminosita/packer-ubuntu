@@ -10,7 +10,7 @@ autoinstall:
   user-data:
     preserve_hostname: false
     hostname: packerubuntu
-    package_upgrade: true
+    package_upgrade: false
     timezone: Europe/Berlin
     users:
       - name: packer
@@ -19,3 +19,5 @@ autoinstall:
         lock-passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash 
+  packages:
+    - ubuntu-minimal

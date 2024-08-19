@@ -95,7 +95,7 @@ source "qemu" "custom_image" {
 
     # Boot Commands when Loading the ISO file with OVMF.fd file (Tianocore) / GrubV2
     boot_command = [
-        "c",
+        "c<wait>",
         "linux /casper/vmlinuz --- autoinstall ds='nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/' ",
         "<enter><wait>",
         "initrd /casper/initrd <enter><wait>",
@@ -173,7 +173,7 @@ build {
     }
 
     provisioner "shell" {
-         inline = [
+        inline = [
         "sudo mv /tmp/50-cloud-init.yaml /etc/netplan/",
         "sudo chown root:root /etc/netplan/50-cloud-init.yaml"
         ]

@@ -68,7 +68,7 @@ source "qemu" "provision_source" {
     //     ["-device", "virtio-net,netdev=forward,id=net0"],
     //     ["-netdev", "user,hostfwd=tcp::{{ .SSHHostPort }}-:22,id=forward"],
     // ]
-    format          = "qcow2"
+    format          = "raw"
 
     shutdown_command = "echo 'packerubuntu' | sudo shutdown -P now"
     shutdown_timeout = "15m"
