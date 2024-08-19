@@ -39,12 +39,12 @@ DISK_USAGE_BEFORE_CLEANUP=$(df -h)
 sudo rm -f /root/.bash_history
 
 # Clean up log files
-sudo find /var/log -type f | while read f; do sudo echo -ne '' > "${f}"; done;
+sudo find /var/log -type f | while read f; do sudo su -c "echo -ne '' > '${f}'"; done;
 
 echo "==> Clearing last login information"
-sudo >/var/log/lastlog
-sudo >/var/log/wtmp
-sudo >/var/log/btmp
+sudo su -c "echo -ne '' >/var/log/lastlog"
+sudo su -c "echo -ne '' >/var/log/wtmp"
+sudo su -c "echo -ne '' >/var/log/btmp"
 
 # NOTE: Shrinking is not part of the build process
 # so this will only grow the image...
@@ -91,5 +91,3 @@ sudo >/var/log/btmp
 
 # echo "==> Disk usage after cleanup"
 # df -h
-
-sudo userdel -f packer

@@ -128,7 +128,9 @@ source "qemu" "custom_image" {
     ssh_password    = "${local.ssh_password}"
     ssh_username    = "${local.ssh_username}"
     ssh_timeout     = "20m"
-    shutdown_command = "echo '${local.ssh_password}' | sudo -S shutdown -P now"
+    shutdown_command   = "sudo su -c \"/sbin/shutdown -hP now\""
+    #userdel -rf ${local.ssh_password};
+    #shutdown_command = "echo '${local.ssh_password}' | sudo -S shutdown -P now" rm /etc/sudoers.d/90-cloud-init-users; 
     headless        = true # NOTE: set this to true when using in CI Pipelines
 }
 
@@ -181,8 +183,7 @@ build {
 
     provisioner "shell" {
         scripts = [
-            "scripts/sshd.sh",
-#            "scripts/network.sh",
+#            "scripts/sshd.sh",    #this needs to go into final image
             "scripts/cleanup.sh"
         ]
     }
