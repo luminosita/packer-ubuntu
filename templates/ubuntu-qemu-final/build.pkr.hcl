@@ -21,34 +21,12 @@ packer {
   }
 }
 
-## Variable will be set via the Command line defined under the `vars` directory
-variable "ubuntu_distro" {
-    type = string
-}
-
-variable "ubuntu_version" {
-    type = string
-}
-
-variable "ubuntu_iso_file" {
-    type = string
-}
-
 variable "vm_template_name" {
     type = string
     default = "packerubuntu"
 }
 
-variable "host_distro" {
-    type = string
-    default = "manjaro"
-}
-
 variable "ubuntu_iso_path" {
-    type = string
-}
-
-variable "ubuntu_iso_checksum" {
     type = string
 }
 
@@ -72,9 +50,6 @@ variable "ubuntu_accelerator" {
 locals {
     vm_name = "${var.vm_template_name}-${var.ubuntu_version}"
     output_dir = "output/${local.vm_name}"
-    ovmf_prefix = {
-      "manjaro" = "x64/"
-    }
     ssh_username = "packer"
     ssh_password = "packer"
 }

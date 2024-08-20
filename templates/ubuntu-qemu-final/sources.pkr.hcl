@@ -12,7 +12,7 @@ source "qemu" "final_image" {
     memory           = 2048
     accelerator      = "${var.ubuntu_accelerator}"
     net_device       = "virtio-net"
-    disk_size        = "30G"
+    disk_size        = "10G"
     disk_compression = true
     disk_interface   = "virtio"
     qemuargs         = "${var.ubuntu_qemuargs}"

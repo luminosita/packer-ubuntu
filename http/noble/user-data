@@ -12,12 +12,13 @@ autoinstall:
   user-data:
     preserve_hostname: false
     hostname: packerubuntu
-    package_upgrade: false
+    package_update: true
+    package_upgrade: true
     timezone: Europe/Berlin
     users:
       - name: packer
         passwd: $6$1H8zzNNDqbcs4Aoc$fzrxqhSmaSdzS.FhQEldGy02Nrx4oDkIX3ApET8OWRtOSncyqBoo556II7K/VfvSTWjvi/MV/NgOBTezNPmxh.
         groups: [adm, cdrom, dip, plugdev, lxd, sudo]
-        lock-passwd: false
+        lock_passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash 

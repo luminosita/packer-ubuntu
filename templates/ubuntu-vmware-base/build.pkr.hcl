@@ -15,8 +15,8 @@
 packer {
   required_plugins {
     qemu = {
-      version = ">= 1.0.9"
-      source  = "github.com/hashicorp/qemu"
+      version = ">= 1.1.0"
+      source  = "github.com/hashicorp/vmware"
     }
   }
 }
@@ -47,23 +47,6 @@ variable "ubuntu_iso_checksum" {
     type = string
 }
 
-variable "ubuntu_qemuargs" {
-    type    = list(list(string))
-    default = []
-}
-
-variable "ubuntu_qemu_binary" {      
-    type = string
-}
-
-variable "ubuntu_machine_type" {     
-    type = string
-}
-
-variable "ubuntu_accelerator" {
-    type = string
-}
-
 locals {
     vm_name = "${var.vm_template_name}-${var.ubuntu_version}"
     output_dir = "output/${local.vm_name}"
@@ -73,7 +56,7 @@ locals {
 
 build {
     name    = "base_build"
-    sources = [ "source.qemu.base_image" ]
+    sources = [ "source.vmware-iso.base_image" ]
 
     provisioner "shell" {
         inline = [

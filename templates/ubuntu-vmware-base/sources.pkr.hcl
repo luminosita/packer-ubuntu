@@ -1,4 +1,4 @@
-source "qemu" "base_image" {
+source "vmware-iso" "base_image" {
     vm_name         = "${local.vm_name}"
     
     iso_urls        = [
@@ -7,6 +7,7 @@ source "qemu" "base_image" {
         ]
     iso_checksum    = "${var.ubuntu_iso_checksum}"
     iso_target_path = "iso"
+    guest_os_type   = "Ubuntu-64"
 
     # Location of Cloud-Init / Autoinstall Configuration files
     # Will be served via an HTTP Server from Packer
@@ -23,22 +24,11 @@ source "qemu" "base_image" {
     
     boot_wait = "5s"
 
-    # QEMU specific configuration
-    qemu_binary      = "${var.ubuntu_qemu_binary}"
-    machine_type     = "${var.ubuntu_machine_type}"
-    format           = "raw"
+    # VMWare specific configuration
     cpus             = 2
     memory           = 2048
-    accelerator      = "${var.ubuntu_accelerator}"
-    net_device       = "virtio-net"
-    disk_size        = "6G"
-    disk_compression = true
-    disk_interface   = "virtio"
-    qemuargs         = "${var.ubuntu_qemuargs}"
-
-    #efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE.fd"
-    #efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS.fd"
-    #efi_boot          = true
+    disk_size        = 10000
+    disk_type_id     = 1
 
     # Final Image will be available in `output/packerubuntu-*/`
     output_directory = "${local.output_dir}"
@@ -48,7 +38,5 @@ source "qemu" "base_image" {
     ssh_username    = "${local.ssh_username}"
     ssh_timeout     = "20m"
     shutdown_command   = "sudo su -c \"/sbin/shutdown -hP now\""
-    #userdel -rf ${local.ssh_password};
-    #shutdown_command = "echo '${local.ssh_password}' | sudo -S shutdown -P now" rm /etc/sudoers.d/90-cloud-init-users; 
     headless        = true # NOTE: set this to true when using in CI Pipelines
 }
