@@ -14,8 +14,9 @@
 
 .PHONY: build-focal build-jammy validate-packer validate-cloudinit validate
 
-QEMU_TEMPLATE_FILE:=./templates/ubuntu-qemu.pkr.hcl
-VMWARE_TEMPLATE_FILE:=./templates/ubuntu-vmware.pkr.hcl
+QEMU_FOLDER:=./templates/ubuntu-qemu-base/
+FINAL_QEMU_FOLDER:=./templates/ubuntu-qemu-final/
+VMWARE_FOLDER:=./templates/ubuntu-vmware-base/
 
 UBUNTU_AMD_VARS_FILE:=./vars/ubuntu-amd.pkrvars.hcl
 UBUNTU_ARM_VARS_FILE:=./vars/ubuntu-arm.pkrvars.hcl
@@ -31,10 +32,10 @@ TEST_TEMPLATE_FILE:=./templates/test.pkr.hcl
 TEST_ARM_TEMPLATE_FILE:=./templates/test-arm.pkr.hcl
 
 init-qemu:
-	packer init ${QEMU_TEMPLATE_FILE}
+	packer init ${QEMU_FOLDER}
 
 init-vmware:
-	packer init ${VMWARE_TEMPLATE_FILE}
+	packer init ${VMWARE_FOLDER}
 
 test-focal: validate-focal
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${FOCAL_VARS_FILE} ${TEST_TEMPLATE_FILE}
@@ -45,8 +46,8 @@ test-jammy: validate-jammy
 test-noble: init
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${TEST_TEMPLATE_FILE}
 
-test-noble-arm: init
-	PACKER_LOG=1 packer build -force -var-file=${NOBLE_ARM_VARS_FILE} ${TEST_ARM_TEMPLATE_FILE}
+final-noble-qemu-arm: init-qemu
+	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${FINAL_QEMU_FOLDER}
 
 build-focal: init
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${FOCAL_VARS_FILE} ${TEMPLATE_FILE}
@@ -55,28 +56,28 @@ build-jammy: validate-jammy
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${JAMMY_VARS_FILE} ${TEMPLATE_FILE}
 
 build-noble-qemu: init-qemu validate-cloudinit-noble
-	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${QEMU_TEMPLATE_FILE}
+	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${QEMU_FOLDER}
 
 build-noble-qemu-arm: init-qemu
-	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${QEMU_TEMPLATE_FILE}
+	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${QEMU_FOLDER}
 
 build-noble-vmware: init-vmware validate-cloudinit-noble
-	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${VMWARE_TEMPLATE_FILE}
+	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${VMWARE_FOLDER}
 
 build-noble-vmware-arm: init-vmware
-	PACKER_LOG=1 packer build -force -var-file=${NOBLE_ARM_VARS_FILE} ${VMWARE_TEMPLATE_FILE}
+	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${VMWARE_FOLDER}
 
 validate-focal: init
 	$(info PACKER: Validating Template with Ubuntu 20.04 (Focal Fossa) Packer Variables)
-	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${FOCAL_VARS_FILE} ${TEMPLATE_FILE}
+	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${FOCAL_VARS_FILE} ${QEMU_FOLDER}
 
 validate-jammy: init
 	$(info PACKER: Validating Template with Ubuntu 22.04 (Jammy Jellyfish) Packer Variables)
-	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${JAMMY_VARS_FILE} ${TEMPLATE_FILE}
+	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${JAMMY_VARS_FILE} ${QEMU_FOLDER}
 
 validate-noble: init 
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
-	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${TEMPLATE_FILE}
+	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${QEMU_FOLDER}
 
 validate-cloudinit-focal:
 	$(info CLOUD-INIT: Validating Ubuntu 20.04 (Focal Fossa) Cloud-Config File)
