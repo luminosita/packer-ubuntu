@@ -10,5 +10,6 @@ crash.log
 # Generated Images
 output/
 iso/
+repository/
 temp/
 .DS_Store

@@ -36,11 +36,16 @@ variable "ubuntu_iso_file" {
 
 variable "vm_template_name" {
     type = string
-    default = "packerubuntu"
+    default = "packer-ubuntu"
 }
 
 variable "ubuntu_iso_path" {
     type = string
+}
+
+variable "ubuntu_repository_path" {
+    type = string
+    default = "repository"
 }
 
 variable "ubuntu_iso_checksum" {
@@ -64,17 +69,23 @@ variable "ubuntu_accelerator" {
     type = string
 }
 
+variable "scripts" {
+    type = list(string)
+}
+
 locals {
     vm_name = "${var.vm_template_name}-${var.ubuntu_version}"
     output_dir = "output/${local.vm_name}"
     ssh_username = "packer"
     ssh_password = "packer"
+    checksum_type = "sha256"
 }
 
 build {
     name    = "base_build"
     sources = [ "source.qemu.base_image" ]
 
+    #Prepare image logs for download
     provisioner "shell" {
         inline = [
             "mkdir /tmp/download",
@@ -84,10 +95,12 @@ build {
             ]
     }
 
+    #Create local (host) logs folder
     provisioner "shell-local" {
         inline = ["mkdir ${local.output_dir}/${local.vm_name}-logs"]
     }
 
+    #Download Autoinstall logs from image to host
     provisioner "file" {
         sources      = [
             "/tmp/download/autoinstall-user-data",
@@ -97,37 +110,16 @@ build {
         direction   = "download"
     }
 
-    # Wait till Cloud-Init has finished setting up the image on first-boot
+    #Wait for Clout-init to finish
     provisioner "shell" {
         inline = [
-            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" 
-        ]
-    }
-
-    provisioner "file" {
-        content = templatefile("../../files/netplan.tpl", {
-            NET_INT = "eth0",
-        })
-        destination = "/tmp/50-cloud-init.yaml"
-    }
-
-    provisioner "shell" {
-        inline = [
-        "sudo mv /tmp/50-cloud-init.yaml /etc/netplan/",
-        "sudo chown root:root /etc/netplan/50-cloud-init.yaml"
-        ]
-    }
-
-    provisioner "shell" {
-        scripts = [
-#            "scripts/sshd.sh",    #this needs to go into final image
-            "scripts/cleanup.sh"
+            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done"
         ]
     }
 
     # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
     post-processor "checksum" {
-        checksum_types      = [ "sha256" ]
+        checksum_types      = [ "${local.checksum_type}" ]
         output              = "${local.output_dir}/${local.vm_name}.{{.ChecksumType}}"
         keep_input_artifact = true
     }
@@ -137,11 +129,27 @@ build {
     name = "final_build"
     sources = [ "source.qemu.final_image" ]
     
+    #Upload Netplan configuration to image from host
+    provisioner "file" {
+        content = templatefile("../../files/netplan.tpl", {
+            NET_INT = "eth0",
+        })
+        destination = "/tmp/50-cloud-init.yaml"
+    }
+
+    #Wait for Clout-init to finish
     provisioner "shell" {
         inline = [
-            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" ,
-            "cat /etc/os-release"
+            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done"
         ]
     }
-}
 
+    provisioner "shell" {
+        scripts = "${vars.scripts}"
+        // scripts = [
+        //     "scripts/network.sh",
+        //     "scripts/sshd.sh",  
+        //     "scripts/cleanup.sh"
+        // ]
+    }
+}

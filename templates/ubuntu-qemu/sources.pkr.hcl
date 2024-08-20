@@ -56,8 +56,9 @@ source "qemu" "base_image" {
 source "qemu" "final_image" {
     vm_name         = "${local.vm_name}"
     
-    iso_url        = "${local.output_dir}/${local.vm_name}"
+    iso_url        = "${var.ubuntu_repository_path}/${local.vm_name}"
     iso_checksum    = "none"
+#    iso_checksum    = "file:///Users/milosh/dev/packer-ubuntu/${var.ubuntu_repository_path}/${local.vm_name}.${local.checksum_type}"
 
     # QEMU specific configuration
     qemu_binary      = "${var.ubuntu_qemu_binary}"
