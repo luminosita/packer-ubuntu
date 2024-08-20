@@ -55,16 +55,16 @@ build-focal: init
 build-jammy: validate-jammy
 	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${JAMMY_VARS_FILE} ${TEMPLATE_FILE}
 
-build-noble-qemu: init-qemu validate-cloudinit-noble
-	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${QEMU_FOLDER}
+build-noble-qemu: validate-noble  validate-cloudinit-noble
+	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${QEMU_FOLDER}
 
-build-noble-qemu-arm: init-qemu
+build-noble-qemu-arm: validate-noble 
 	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${QEMU_FOLDER}
 
-build-noble-vmware: init-vmware validate-cloudinit-noble
-	source /etc/os-release; PACKER_LOG=1 packer build -force -var host_distro=$${ID} -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${VMWARE_FOLDER}
+build-noble-vmware: validate-noble validate-cloudinit-noble
+	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${VMWARE_FOLDER}
 
-build-noble-vmware-arm: init-vmware
+build-noble-vmware-arm: validate-noble 
 	PACKER_LOG=1 packer build -force -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${VMWARE_FOLDER}
 
 validate-focal: init
@@ -75,9 +75,10 @@ validate-jammy: init
 	$(info PACKER: Validating Template with Ubuntu 22.04 (Jammy Jellyfish) Packer Variables)
 	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${JAMMY_VARS_FILE} ${QEMU_FOLDER}
 
-validate-noble: init 
+validate-noble: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
-	source /etc/os-release; packer validate -var host_distro=$${ID} -var-file=${NOBLE_VARS_FILE} ${QEMU_FOLDER}
+	packer validate -var-file=${UBUNTU_AMD_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_AMD_VARS_FILE} ${QEMU_FOLDER}
+	packer validate -var-file=${UBUNTU_ARM_VARS_FILE} -var-file=${NOBLE_VARS_FILE} -var-file=${NOBLE_ARM_VARS_FILE} ${QEMU_FOLDER}
 
 validate-cloudinit-focal:
 	$(info CLOUD-INIT: Validating Ubuntu 20.04 (Focal Fossa) Cloud-Config File)
@@ -87,7 +88,7 @@ validate-cloudinit-jammy:
 	$(info CLOUD-INIT: Validating Ubuntu 22.04 (Jammy Jellyfish) Cloud-Config File)
 	cloud-init schema -c http/jammy/user-data
 
-validate-cloudinit-noble:
+validate-cloudinit-noble: init-qemu
 	$(info CLOUD-INIT: Validating Ubuntu 24.04 (Noble Numbat) Cloud-Config File)
 	cloud-init schema -c http/noble/user-data
 
