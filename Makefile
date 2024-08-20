@@ -77,7 +77,7 @@ validate-noble: init-qemu
 
 validate-cloudinit-noble: init-qemu
 	$(info CLOUD-INIT: Validating Ubuntu 24.04 (Noble Numbat) Cloud-Config File)
-	cloud-init schema -c http/noble/user-data
+	cloud-init schema -c http/user-data
 
 validate-jammy: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 22.04 (Jammy) Packer Variables)
@@ -86,7 +86,7 @@ validate-jammy: init-qemu
 
 validate-cloudinit-jammy: init-qemu
 	$(info CLOUD-INIT: Validating Ubuntu 22.04 (Jammy) Cloud-Config File)
-	cloud-init schema -c http/jammy/user-data
+	cloud-init schema -c http/user-data
 
 validate-focal: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 20.04 (Focal Fossa) Packer Variables)
@@ -95,5 +95,5 @@ validate-focal: init-qemu
 
 validate-cloudinit-focal: init-qemu
 	$(info CLOUD-INIT: Validating Ubuntu 20.04 (Focal Fossa) Cloud-Config File)
-	cloud-init schema -c http/focal/user-data
+	cloud-init schema -c http/user-data
 
