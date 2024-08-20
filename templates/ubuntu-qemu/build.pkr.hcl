@@ -132,3 +132,16 @@ build {
         keep_input_artifact = true
     }
 }
+
+build {
+    name = "final_build"
+    sources = [ "source.qemu.final_image" ]
+    
+    provisioner "shell" {
+        inline = [
+            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done" ,
+            "cat /etc/os-release"
+        ]
+    }
+}
+
