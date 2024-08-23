@@ -13,8 +13,8 @@
 #  limitations under the License.
 
 build {
-    name    = "image"
-    sources = [ "source.qemu.image" ]
+    name    = "base"
+    sources = [ "source.qemu.base" ]
 
     #Prepare image logs for download
     provisioner "shell" {
@@ -69,24 +69,42 @@ build {
         output              = "${local.output_dir}/${local.vm_name}.{{.ChecksumType}}"
         keep_input_artifact = true
     }
-}
 
-source "null" "basic" {
-    ssh_host = "127.0.0.1"
-    ssh_port = "60022"
-    ssh_username = "ubuntu"
-    ssh_password = "ubuntu"
+    post-processor "shell-local" {
+        inline = [
+            "mkdir -p ${local.vm_repo_path}",
+            "cp ${local.output_dir}/${local.vm_name} ${local.vm_repo_url}.img"
+        ]
+    }
 }
 
 build {
-    name = "basic"
-    sources = ["sources.null.basic"]
+    name = "ansible"
+    sources = [ "source.qemu.base" ]
 
     provisioner "ansible-local" {
       playbook_dir ="ansible"
       playbook_file = "ansible/playbook.yaml"
-      extra_arguments = ["-e operation=server -v"]
+      extra_arguments = ["-e operation=${var.ansible_operation} -v"]
       command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
-#      ansible_env_vars = [ "ANSIBLE_SSH_ARGS=-o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostkeyAlgorithms=+ssh-rsa" ]
+    }
+
+    post-processor "shell-local" {
+        inline = [
+            "mkdir -p ${local.vm_repo_path}",
+            "cp ${local.output_dir}/${local.vm_name} ${local.vm_repo_url}.img"
+        ]
+    }
+}
+
+build {
+    name = "ansible-remote"
+    sources = [ "source.null.ansible" ]
+
+    provisioner "ansible-local" {
+      playbook_dir ="ansible"
+      playbook_file = "ansible/playbook.yaml"
+      extra_arguments = ["-e operation=${var.ansible_operation} -v"]
+      command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
     }
 }

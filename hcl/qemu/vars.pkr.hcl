@@ -20,7 +20,7 @@ variable "vm_version" {
     default = "1.0"
 }
 
-variable "repository_path" {
+variable "vm_repository_root" {
     type = string
     default = "/Users/milosh/vm_repo"
 }
@@ -45,10 +45,36 @@ variable "vm_mac_addr" {
     default = "00:AC:39:2C:F9:46"
 }
 
+variable "ansible_ssh_host" {
+    type = string
+    default = "127.0.0.1"
+}
+
+variable "ansible_ssh_port" {
+    type = number
+    default = 60022
+} 
+variable "ansible_ssh_username" {
+    type = string
+    default = "ubuntu"
+}
+variable "ansible_ssh_password" { 
+    type = string
+    default = "ubuntu"
+}
+
+variable "ansible_operation" { 
+    type = string
+    default = "server"
+}
+
 locals {
     vm_name = "${var.vm_name}-${var.vm_version}"
-    base_url = "${var.repository_path}/${var.vm_base_name}/${var.vm_base_version}/${var.vm_base_name}-${var.vm_base_version}"
-    base_url_checksum = "none"
+    vm_base_url = "${var.vm_repository_root}/${var.vm_base_name}/${var.vm_base_version}/${var.vm_base_name}-${var.vm_base_version}"
+    vm_base_url_checksum = "none"
+    vm_repo_path = "${var.vm_repository_root}/${var.vm_name}/${var.vm_version}" 
+    vm_repo_url = "${local.vm_repo_path}/${var.vm_name}-${var.vm_version}"
+    
     output_dir = "output/${local.vm_name}"
     ssh_username = "ubuntu"
     ssh_password = "ubuntu"

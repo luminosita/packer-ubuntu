@@ -1,10 +1,10 @@
-source "qemu" "image" {
-    vm_name         = "${local.vm_name}"
+source "qemu" "base" {
+    vm_name          = "${local.vm_name}"
     
-    iso_url        = "${local.base_url}.img"
-    iso_checksum    = "${local.base_url_checksum}"
+    iso_url          = "${local.vm_base_url}.img"
+    iso_checksum     = "${local.vm_base_url_checksum}"
 
-    boot_wait = "5s"
+    boot_wait        = "5s"
 
     # QEMU specific configuration
     qemu_binary      = "${lookup(local.qemu_binary, var.arch, [])}"
@@ -13,7 +13,6 @@ source "qemu" "image" {
     cpus             = "${var.vm_cpus}"
     memory           = "${var.vm_memory}"
     accelerator      = "${lookup(local.accelerator, var.arch, "")}"
-    net_device       = "virtio-net"
     disk_image       = true  #clone base image
     disk_size        = "${var.vm_disk_size}"
     disk_compression = true
@@ -27,11 +26,19 @@ source "qemu" "image" {
     output_directory = "${local.output_dir}"
 
     # SSH configuration so that Packer can log into the Image
-    ssh_password    = "${local.ssh_password}"
-    ssh_username    = "${local.ssh_username}"
-    ssh_timeout     = "20m"
+    ssh_password     = "${local.ssh_password}"
+    ssh_username     = "${local.ssh_username}"
+    ssh_timeout      = "20m"
     shutdown_command   = "sudo su -c \"/sbin/shutdown -hP now\""
 #    shutdown_command   = "sudo su -c \"userdel -rf ${local.ssh_password}; /sbin/shutdown -hP now\""
     #shutdown_command = "echo '${local.ssh_password}' | sudo -S shutdown -P now" rm /etc/sudoers.d/90-cloud-init-users; 
     headless        = true # NOTE: set this to true when using in CI Pipelines
 }
+
+source "null" "ansible" {
+    ssh_host        = "${var.ansible_ssh_host}"
+    ssh_port        = "${var.ansible_ssh_port}"
+    ssh_username    = "${var.ansible_ssh_username}"
+    ssh_password    = "${var.ansible_ssh_password}"
+}
+

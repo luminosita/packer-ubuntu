@@ -8,17 +8,18 @@
 
 - name: Include Bootstrap tasks
   include_tasks: bootstrap.yaml
+  when: (operation is search("bootstrap"))
 
 - name: Include K3s Server tasks
   include_tasks: server.yaml
-  when: (operation == "server")
+  when: (operation is search("server"))
 
 - name: Include K3s Istio tasks
   include_tasks: istio.yaml
-  when: (operation == "server")
+  when: (operation is search("istio"))
 
 - name: Include K3s Worker tasks
   include_tasks: agent.yaml
-  when: (operation == "agent")
+  when: (operation is search("agent"))
 
 
