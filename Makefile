@@ -14,7 +14,7 @@
 
 .PHONY: build-focal build-jammy validate-packer validate-cloudinit validate
 
-VM_REPO_ROOT:=~/vm_repo
+REPO_ROOT:=~/vm_repo
 
 QEMU_FOLDER:=./hcl/qemu/
 
@@ -24,7 +24,7 @@ NOBLE_K3S_AGENT_VARS_FILE:=./images/ubuntu-noble-k3s-agent.hcl
 NOBLE_K3S_ISTIO_VARS_FILE:=./images/ubuntu-noble-k3s-istio.hcl
 
 init-qemu:
-	export VM_REPO_ROOT = ${VM_REPO_ROOT}
+	export VM_REPO_ROOT = ${REPO_ROOT}
 	packer init ${QEMU_FOLDER}
 
 build-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
@@ -75,9 +75,9 @@ qemu-efi:
 	curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
 
 download-noble-cloud-amd:
-	mkdir -p ${VM_REPO_ROOT}/ubuntu-noble/24.04
-	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img -o ${VM_REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
+	mkdir -p ${REPO_ROOT}/ubuntu-noble/24.04
+	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img -o ${REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
 
 download-noble-cloud-arm:
-	mkdir -p ${VM_REPO_ROOT}/ubuntu-noble/24.04
-	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img -o ${VM_REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
+	mkdir -p ${REPO_ROOT}/ubuntu-noble/24.04
+	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img -o ${REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
