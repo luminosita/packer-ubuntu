@@ -24,8 +24,7 @@ NOBLE_K3S_AGENT_VARS_FILE:=./images/ubuntu-noble-k3s-agent.hcl
 NOBLE_K3S_ISTIO_VARS_FILE:=./images/ubuntu-noble-k3s-istio.hcl
 
 init-qemu:
-	export VM_REPO_ROOT = ${REPO_ROOT}
-	packer init ${QEMU_FOLDER}
+	export VM_REPO_ROOT=${REPO_ROOT}; packer init ${QEMU_FOLDER}
 
 build-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
 	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
