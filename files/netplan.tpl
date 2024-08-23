@@ -1,5 +1,7 @@
 network:
-    version: 2
     ethernets:
-        ${NET_INT}:
+        eth0:
             dhcp4: true
+            dhcp6: true
+            macaddress: ${MAC_ADDR}
+    version: 2

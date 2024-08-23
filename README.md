@@ -1,87 +1,21 @@
-# Install Packer
+Build an image of cloud-init settings
+$ docker run -it -v `pwd`:/tmp/host --rm ubuntu:16.04
+# apt update; apt install -y vim cloud-utils; cloud-localds /tmp/host/seed.img /tmp/host/cloud.cfg
 
-```bash
-$ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-$ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-$ sudo apt-get update && sudo apt-get install packer
-```
+Download QEMU EFI.
+curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
 
-# Install Qemu System 
+qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 -bios QEMU_EFI.fd -nographic -drive if=virtio,format=qcow2,file=output/test-ubuntu-noble-1.0/test-ubuntu-noble-1.0
 
-```bash
-$ sudo apt install qemu-system
-```
+ssh ubuntu@127.0.0.1 -p 60022
 
-# packer-ubuntu-server-uefi
-Templates for creating Ubuntu Live Server Images with Packer + QEMU + Autoinstall (cloud-init)
 
-Currently Supported Images:
+Checksum?
+EFI?
+Ansible?
 
-| Name                | Version       |
-|:--------------------|:-------------:|
-| __Focal Fossa__     |     `20.04.6` |
-| __Jammy Jellyfish__ |     `22.04.4` |
-| __Noble Numbat__    |     `24.04`   |
+Makefile 
+    create seed image
+    create base image
 
-An accompanying blogpost is available [here][1]
-
-## Usage
-
-Use GNU-Make to perform validation / build images:
-
-### Validation
-
-To validate `cloud-init` and `ubuntu.pkr.hcl` template perform
-
-```bash
-make validate
-```
-
-To simply validate `cloud-init` against all distros
-
-```bash
-make validate-cloudinit
-```
-
-To validate `cloud-init` configuration of a specific distro (`focal`, `jammy`, `noble`)
-
-```bash
-make validate-cloudinit-<distroname> # <distroname> here is either focal, jammy or noble
-```
-
-To simply validate `ubuntu.pkr.hcl` template against all distros
-
-```bash
-make validate-packer
-```
-
-### Build Images
-
-to build Ubuntu 20.04 (Focal) image
-
-```bash
-make build-focal
-```
-
-to build Ubuntu 22.04 (Jammy) image
-
-```bash
-make build-jammy
-```
-
-to build Ubuntu 24.04 (Noble) image
-
-```bash
-make build-noble
-```
-
-## UEFI BootLoader Sequence Determination
-
-see the `late-commands` in the `user-data` file. This is determined by installing `efibootmgr` on the live
-image and performing `sudo efibootmgr`. This lists what are the sequences and when should the image be booted.
-
-> NOTE: there seems to be compatibility issue between Ubuntu 24.04 and older Ubuntu LTS version in terms of
-> output from the `efibootmgr`, namely, Capitalization. Hence each Cloud-Init `user-data` now is in a 
-> separate directory under the `http` directory in the repo.
-
-[1]: https://shantanoo-desai.github.io/posts/technology/packer-ubuntu-qemu/
+Hardcoded repository_path 

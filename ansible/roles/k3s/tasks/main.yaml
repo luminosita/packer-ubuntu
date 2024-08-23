@@ -1,0 +1,24 @@
+- name: Print Operation
+  ansible.builtin.debug:
+    msg: Operation {{ operation }}
+
+- name: Test Environment variable "operation"
+  fail: msg="Operation is not defined"
+  when: (operation is undefined or operation|length == 0)
+
+- name: Include Bootstrap tasks
+  include_tasks: bootstrap.yaml
+
+- name: Include K3s Server tasks
+  include_tasks: server.yaml
+  when: (operation == "server")
+
+- name: Include K3s Istio tasks
+  include_tasks: istio.yaml
+  when: (operation == "server")
+
+- name: Include K3s Worker tasks
+  include_tasks: agent.yaml
+  when: (operation == "agent")
+
+
