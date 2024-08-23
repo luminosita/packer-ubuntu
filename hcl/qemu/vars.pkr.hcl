@@ -22,7 +22,7 @@ variable "vm_version" {
 
 variable "vm_repository_root" {
     type = string
-    default = "~/vm_repo"
+    default = env("VM_REPO_ROOT")
 }
 
 variable "vm_cpus" {
