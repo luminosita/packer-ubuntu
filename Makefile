@@ -55,10 +55,15 @@ validate-cloudinit: init-qemu
 	cloud-init schema -c cloud/cloud.cfg
 
 #Make seed.img used by qemu to initialize cloud images and download proper QEMU EFI bios
-prepare: seed qemu-efi
-	
-seed:
+prepare-arm: seed-arm qemu-efi
+
+prepare-amd: seed-amd qemu-efi
+
+seed-arm:
 	docker run -it -v $(shell pwd)/cloud:/tmp/host --rm luminosita/cloud-init:latest cloud-localds /tmp/host/seed.img /tmp/host/cloud.cfg
+
+seed-amd:
+	cloud-localds cloud/seed.img cloud/cloud.cfg
 
 qemu-efi:
 	curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
