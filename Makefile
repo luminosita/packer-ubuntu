@@ -50,11 +50,9 @@ build-noble-k3s-istio-qemu-arm: validate-arm
 validate-amd: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
 	packer validate -var arch="amd" ${QEMU_FOLDER}
-	packer validate -var arch="arm" ${QEMU_FOLDER}
 
 validate-arm: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
-	packer validate -var arch="amd" ${QEMU_FOLDER}
 	packer validate -var arch="arm" ${QEMU_FOLDER}
 
 validate-cloudinit: init-qemu
