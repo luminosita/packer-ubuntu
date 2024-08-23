@@ -22,7 +22,7 @@ variable "vm_version" {
 
 variable "vm_repository_root" {
     type = string
-    default = "/Users/milosh/vm_repo"
+    default = "~/vm_repo"
 }
 
 variable "vm_cpus" {
