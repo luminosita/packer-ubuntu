@@ -9,3 +9,5 @@ Change passwd ubuntu user
 Qemu Builder not resizing image
 AMD build test
 Тest k3s cluster with three nodes
+
+Copy node tokens for server
