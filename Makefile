@@ -26,28 +26,33 @@ NOBLE_K3S_ISTIO_VARS_FILE:=./images/ubuntu-noble-k3s-istio.hcl
 init-qemu:
 	packer init ${QEMU_FOLDER}
 
-build-noble-ansible-qemu-amd: validate  validate-cloudinit
+build-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
 	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
 
-build-noble-ansible-qemu-arm: validate
+build-noble-ansible-qemu-arm: validate-arm
 	packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
 
-build-noble-k3s-server-qemu-amd: validate  validate-cloudinit
+build-noble-k3s-server-qemu-amd: validate-amd  validate-cloudinit
 	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
-build-noble-k3s-server-qemu-arm: validate
+build-noble-k3s-server-qemu-arm: validate-arm
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
-build-noble-k3s-agent-qemu-amd: validate  validate-cloudinit
+build-noble-k3s-agent-qemu-amd: validate-amd  validate-cloudinit
 	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
-build-noble-k3s-agent-qemu-arm: validate
+build-noble-k3s-agent-qemu-arm: validate-arm
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
-build-noble-k3s-istio-qemu-arm: validate
+build-noble-k3s-istio-qemu-arm: validate-arm
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
-validate: init-qemu
+validate-amd: init-qemu
+	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
+	packer validate -var arch="amd" ${QEMU_FOLDER}
+	packer validate -var arch="arm" ${QEMU_FOLDER}
+
+validate-arm: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
 	packer validate -var arch="amd" ${QEMU_FOLDER}
 	packer validate -var arch="arm" ${QEMU_FOLDER}
