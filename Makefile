@@ -14,7 +14,7 @@
 
 .PHONY: build-focal build-jammy validate-packer validate-cloudinit validate
 
-REPO_ROOT:=~/vm_repo
+REPO_ROOT:=~/vm_repo/
 
 QEMU_FOLDER:=./hcl/qemu/
 
@@ -23,29 +23,38 @@ NOBLE_K3S_SERVER_VARS_FILE:=./images/ubuntu-noble-k3s-server.hcl
 NOBLE_K3S_AGENT_VARS_FILE:=./images/ubuntu-noble-k3s-agent.hcl
 NOBLE_K3S_ISTIO_VARS_FILE:=./images/ubuntu-noble-k3s-istio.hcl
 
+test:
+	@echo 'need to run some program before assigning env variable';\
+		echo $(REPO_ROOT);\
+		echo $(shell dirname $(REPO_ROOT));\
+        echo 'The make CC variable is set to :${CC}:';\
+        export TEST="$(shell dirname $(REPO_ROOT))";\
+        echo 'printing env';\
+        echo $${TEST};
+
 init-qemu:
-	export VM_REPO_ROOT=${REPO_ROOT}; packer init ${QEMU_FOLDER}
+	packer init ${QEMU_FOLDER}
 
 build-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
-	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
 
 build-noble-ansible-qemu-arm: validate-arm
-	packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
 
 build-noble-k3s-server-qemu-amd: validate-amd  validate-cloudinit
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
 build-noble-k3s-server-qemu-arm: validate-arm
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
 build-noble-k3s-agent-qemu-amd: validate-amd  validate-cloudinit
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
 build-noble-k3s-agent-qemu-arm: validate-arm
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
 
 build-noble-k3s-istio-qemu-arm: validate-arm
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
 validate-amd: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
