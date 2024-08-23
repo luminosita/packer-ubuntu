@@ -71,9 +71,9 @@ qemu-efi:
 	curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
 
 download-noble-cloud-amd:
-	mkdir -p ${VM_REPO_ROOT}/ubuntu-noble/24.4
+	mkdir -p ${VM_REPO_ROOT}/ubuntu-noble/24.04
 	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img -o ${VM_REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
 
 download-noble-cloud-arm:
-	mkdir -p ${VM_REPO_ROOT}/ubuntu-noble/24.4
+	mkdir -p ${VM_REPO_ROOT}/ubuntu-noble/24.04
 	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img -o ${VM_REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
