@@ -17,3 +17,4 @@ QEMU_EFI.fd
 cloud/seed.img
 python-venv/
 k3s.token
+hcl/digitalocean/vars.auto.pkrvars.hcl
