@@ -1,6 +1,10 @@
 - name: K3s Bootstrap
   hosts: localhost
   become: true
+  
+  roles:
+    - k3s
+
   vars: {
     istio_version: 1.23.0,
     istio_path: "./istio-{{ istio_version }}",
@@ -9,14 +13,11 @@
 
     cluster_cidr: 10.100.0.0/16,
 
-    # node_token: "{{ lookup('file','/tmp/node-token') }}",
-    # control_node_url: "{{ lookup('file','/tmp/control-node-url') }}",
+# node_token: "{{ lookup('file','/tmp/node-token') }}"
+# control_node_url: "{{ lookup('file','/tmp/control-node-url') }}"
 
-    network_interface: "eth0",
+    network_interface: "enp0s1",
 
     virtualenv_pip3: /home/ubuntu/python-venv/ansible/bin/pip3,
     ansible_python_interpreter: /home/ubuntu/python-venv/ansible/bin/python3
   }
-  
-  roles:
-    - k3s

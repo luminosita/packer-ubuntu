@@ -42,3 +42,11 @@ source "null" "ansible" {
     ssh_password    = "${var.ansible_ssh_password}"
 }
 
+source "digitalocean" "example" {
+  image        = "ubuntu-22-04-x64"
+  region       = "fra1"
+  size         = "s-2vcpu-4gb"
+  ssh_username = "root"
+}
+
+

@@ -16,13 +16,18 @@ build {
     name    = "base"
     sources = [ "source.qemu.base" ]
 
+    #Upload Netplan configuration to image from host
+    // provisioner "file" {
+    //     content = templatefile("../../files/netplan.tpl", {
+    //         MAC_ADDR = "${var.vm_mac_addr}",
+    //     })
+    //     destination = "/tmp/50-cloud-init.yaml"
+    // }
+
+
     #Prepare image logs for download
     provisioner "shell" {
-        inline = [
-            "mkdir /tmp/download",
-            "sudo mv /var/log/cloud-init-output.log /tmp/download",
-            "sudo touch /etc/cloud/cloud-init.disabled"
-            ]
+        scripts = [ "scripts/cloud-init.sh" ]
     }
 
     #Create local (host) logs folder
@@ -39,30 +44,13 @@ build {
         direction   = "download"
     }
 
-    #Wait for Clout-init to finish
-    provisioner "shell" {
-        inline = [
-            "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for Cloud-Init...'; sleep 1; done"
-        ]
-    }
-
-    #Upload Netplan configuration to image from host
-    provisioner "file" {
-        content = templatefile("../../files/netplan.tpl", {
-            MAC_ADDR = "${var.vm_mac_addr}",
-        })
-        destination = "/tmp/50-cloud-init.yaml"
-    }
-
     provisioner "shell" {
         scripts = [
-            "scripts/python.sh", 
-            "scripts/network.sh",
+#            "scripts/network.sh",
             "scripts/sshd.sh",  
             "scripts/cleanup.sh"
         ]
     }
-
     # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
     post-processor "checksum" {
         checksum_types      = [ "${local.checksum_type}" ]
@@ -82,11 +70,14 @@ build {
     name = "ansible"
     sources = [ "source.qemu.base" ]
 
-    provisioner "ansible-local" {
-      playbook_dir ="ansible"
-      playbook_file = "ansible/playbook.yaml"
-      extra_arguments = ["-e operation=${var.ansible_operation} -v"]
-      command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
+    provisioner "shell" {
+        scripts = [ "scripts/python.sh" ]
+    }
+    provisioner "ansible" {
+        playbook_file = "ansible/playbook.yaml"
+        extra_arguments = ["-e operation=${var.ansible_operation} -v"]
+//        command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
+        ansible_ssh_extra_args = [ "-o StrictHostKeyChecking=no -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostkeyAlgorithms=+ssh-rsa"]
     }
 
     post-processor "shell-local" {
@@ -102,9 +93,27 @@ build {
     sources = [ "source.null.ansible" ]
 
     provisioner "ansible-local" {
-      playbook_dir ="ansible"
-      playbook_file = "ansible/playbook.yaml"
-      extra_arguments = ["-e operation=${var.ansible_operation} -v"]
-      command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
+        playbook_dir = "ansible"
+        playbook_file = "ansible/playbook.yaml"
+        extra_arguments = ["-e operation=${var.ansible_operation} -v"]
+        command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
+#      ansible_ssh_extra_args = [ "-o StrictHostKeyChecking=no -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostkeyAlgorithms=+ssh-rsa"]
+#      local_port = "${var.ansible_ssh_port}"
+    }
+}
+
+build {
+    sources = ["source.digitalocean.example"]
+
+    provisioner "shell" {
+        scripts = [ "scripts/python.sh" ]
+    }
+
+    provisioner "ansible-local" {
+        playbook_dir = "ansible"
+        playbook_file = "ansible/playbook.yaml"
+        extra_arguments = ["-e operation=${var.ansible_operation} -v"]
+        command = "/home/ubuntu/python-venv/ansible/bin/ansible-playbook"
+#      ansible_ssh_extra_args = [ "-o StrictHostKeyChecking=no -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostkeyAlgorithms=+ssh-rsa"]
     }
 }

@@ -24,14 +24,16 @@ qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio
 
 ssh ubuntu@127.0.0.1 -p 60022
 
+packer DigitalOcean for k8s
 
+Start cockpit as non-root
+Start qemu as non-root
 Checksum?
-Hardcoded repository_path 
+
 Change passwd ubuntu user
 Qemu Builder not resizing image
-AMD build test
+
+Terraform:
 Тest k3s cluster with three nodes
-
-Copy node tokens for server
-
-Terraform
+K3S node tokens for server
+Fix scripts in base builder

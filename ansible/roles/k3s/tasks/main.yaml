@@ -14,6 +14,18 @@
   include_tasks: server.yaml
   when: (operation is search("server"))
 
+- name: Include K3s Network tasks
+  include_tasks: network.yaml
+  when: (operation is search("network"))
+
+- name: Include K3s Cert Manager tasks
+  include_tasks: certmgr.yaml
+  when: (operation is search("certmgr"))
+
+- name: Include K3s Config tasks
+  include_tasks: config.yaml
+  when: (operation is search("config"))
+
 - name: Include K3s Istio tasks
   include_tasks: istio.yaml
   when: (operation is search("istio"))

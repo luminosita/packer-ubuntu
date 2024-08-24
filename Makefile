@@ -14,47 +14,43 @@
 
 .PHONY: build-focal build-jammy validate-packer validate-cloudinit validate
 
-REPO_ROOT:=~/vm_repo/
-
-QEMU_FOLDER:=./hcl/qemu/
-
-NOBLE_ANSIBLE_VARS_FILE:=./images/ubuntu-noble-ansible.hcl
-NOBLE_K3S_SERVER_VARS_FILE:=./images/ubuntu-noble-k3s-server.hcl
-NOBLE_K3S_AGENT_VARS_FILE:=./images/ubuntu-noble-k3s-agent.hcl
-NOBLE_K3S_ISTIO_VARS_FILE:=./images/ubuntu-noble-k3s-istio.hcl
-
-test:
-	@echo 'need to run some program before assigning env variable';\
-		echo $(REPO_ROOT);\
-		echo $(shell dirname $(REPO_ROOT));\
-        echo 'The make CC variable is set to :${CC}:';\
-        export TEST="$(shell dirname $(REPO_ROOT))";\
-        echo 'printing env';\
-        echo $${TEST};
+include common.mk
 
 init-qemu:
+	$(info PACKER: Init Packer plugins)
 	packer init ${QEMU_FOLDER}
 
 build-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
+	$(info PACKER: Build Ansible template image (QEMU, AMD64))
+	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
 
 build-noble-ansible-qemu-arm: validate-arm
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
+	$(info PACKER: Build Ansible template image (QEMU, ARM64))
+	packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_FOLDER}
 
 build-noble-k3s-server-qemu-amd: validate-amd  validate-cloudinit
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	$(info PACKER: Remote configure K3S Server (QEMU, AMD64))
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
 build-noble-k3s-server-qemu-arm: validate-arm
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	$(info PACKER: Remote configure K3S Server (QEMU, ARM64))
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
 build-noble-k3s-agent-qemu-amd: validate-amd  validate-cloudinit
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	$(info PACKER: Remote configure K3S Agent (QEMU, AMD64))
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
 build-noble-k3s-agent-qemu-arm: validate-arm
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible.qemu.base ${QEMU_FOLDER}
+	$(info PACKER: Remote configure K3S Agent (QEMU, ARM64))
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+
+build-noble-k3s-istio-qemu-amd: validate-amd
+	$(info PACKER: Remote configure Istio Mesh (QEMU, AMD64))
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
 build-noble-k3s-istio-qemu-arm: validate-arm
-	VM_REPO_ROOT=$(REPO_ROOT) packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	$(info PACKER: Remote configure Istio Mesh (QEMU, ARM64))
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
 validate-amd: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
@@ -69,23 +65,62 @@ validate-cloudinit: init-qemu
 	cloud-init schema -c cloud/cloud.cfg
 
 #Make seed.img used by qemu to initialize cloud images and download proper QEMU EFI bios
-prepare-arm: seed-arm qemu-efi download-noble-cloud-arm
+prepare-arm: seed-arm qemu-efi download-noble-cloud-arm generate-k3s-token prepare-python-arm
 
-prepare-amd: seed-amd qemu-efi download-noble-cloud-amd
+prepare-amd: seed-amd qemu-efi download-noble-cloud-amd generate-k3s-token prepare-python-amd
 
 seed-arm:
+	$(info DOCKER: Create Seed image for Cloud-init)
 	docker run -it -v $(shell pwd)/cloud:/tmp/host --rm luminosita/cloud-init:latest cloud-localds /tmp/host/seed.img /tmp/host/cloud.cfg
 
 seed-amd:
+	$(info CLOUD-LOCALDS: Create Seed image for Cloud-init)
 	cloud-localds cloud/seed.img cloud/cloud.cfg
 
 qemu-efi:
+	$(info CURL: Download QEMU EFI bios)
 	curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
 
 download-noble-cloud-amd:
+	$(info CURL: Ubuntu 24.04 (Noble Numbat) and setup local VM images repository)
 	mkdir -p ${REPO_ROOT}/ubuntu-noble/24.04
 	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img -o ${REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
 
 download-noble-cloud-arm:
+	$(info CURL: Ubuntu 24.04 (Noble Numbat) and setup local VM images repository)
 	mkdir -p ${REPO_ROOT}/ubuntu-noble/24.04
 	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img -o ${REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
+
+generate-k3s-token:
+	$(info K3S: Generate K3S TOKEN)
+	$(info OLD K3S TOKEN: ${K3S_TOKEN_VAR})
+
+	NEW_TOKEN=$(shell docker run --entrypoint "" -it --rm rancher/k3s:latest /bin/k3s token generate); \
+
+	echo $$NEW_TOKEN > ${K3S_TOKEN_FILE}; \
+	
+	$(info NEW K3S TOKEN: ${NEW_TOKEN})
+
+prepare-python-amd:
+	$(info SHELL: Prepare Python Virtual Environment for Ansible)
+	
+	sudo apt -y update && \
+	sudo apt -y upgrade && \
+	sudo apt install -y python3-venv
+
+	mkdir python-venv && \
+	cd python-venv && \
+	python3 -m venv ansible
+
+	./python-venv/ansible/bin/python3 -m pip install --upgrade pip && \
+	./python-venv/ansible/bin/python3 -m pip install ansible
+
+prepare-python-arm:
+	$(info SHELL: Prepare Python Virtual Environment for Ansible)
+
+	mkdir python-venv && \
+	cd python-venv && \
+	python3 -m venv ansible
+
+	./python-venv/ansible/bin/python3 -m pip install --upgrade pip && \
+	./python-venv/ansible/bin/python3 -m pip install ansible

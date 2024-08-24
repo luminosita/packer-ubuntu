@@ -1,9 +1,10 @@
-vm_name             = "ubuntu-noble-k3s-agent"
-vm_version          = "1.0"
-
 vm_base_name        = "ubuntu-noble-ansible" 
 vm_base_version     = "1.0"
 
 ansible_operation   = "bootstrap,agent"
 
-vm_disk_size        = "10G"
+ansible_ssh_host        = "localhost"
+ansible_ssh_port        = 60022
+ansible_ssh_username    = "ubuntu"
+ansible_ssh_password    = "ubuntu"
+

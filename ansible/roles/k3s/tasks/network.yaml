@@ -1,0 +1,45 @@
+- name: Check if Service Exists
+  ansible.builtin.stat: "path=~/.kube/config"
+  register: kubeconfig_status
+
+- name: Setup kubeconfig for user
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - "mkdir -p ~/.kube"
+    - "cp -n /etc/rancher/k3s/k3s.yaml ~/.kube/config"
+  when: not kubeconfig_status.stat.exists
+
+- name: Check if Calico Exists
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: calico-system
+  register: k3s_calico_status
+
+- name: Deploy Calico CNI
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+    - kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+  when: k3s_calico_status.resources is defined and k3s_calico_status.resources|length == 0
+
+- name: Patch Calico for proper network interface
+  kubernetes.core.k8s:
+    state: patched
+    kind: Installation
+    name: default
+    namespace: tigera-operator
+    template: 'templates/patch-network-interface.j2'
+##  when: k3s_calico_status.resources is defined and k3s_calico_status.resources|length == 0
+
+- name: Wait for Calico Pod to be in Running status
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: calico-system
+    label_selectors:
+      - app.kubernetes.io/name=calico-node
+    wait: yes
+    wait_condition:
+      status: True
+      type: Ready
+    wait_timeout: 600
+

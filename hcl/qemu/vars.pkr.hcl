@@ -65,7 +65,7 @@ variable "ansible_ssh_password" {
 
 variable "ansible_operation" { 
     type = string
-    default = "server"
+    default = ""
 }
 
 locals {
@@ -84,14 +84,16 @@ locals {
         "amd" = [
             [ "-cpu", "host" ],
             [ "-bios", "/usr/share/ovmf/OVMF.fd" ],
-            [ "-device", "virtio-net,netdev=forward,id=net0,mac=${var.vm_mac_addr}"],
+#            [ "-device", "virtio-net,netdev=forward,id=net0,mac=${var.vm_mac_addr}"],
+            [ "-device", "virtio-net,netdev=forward,id=net0"],
             [ "-netdev", "user,hostfwd=tcp::{{ .SSHHostPort }}-:22,id=forward"],
             [ "-cdrom", "cloud/seed.img" ]            
         ]
         "arm" = [
             [ "-cpu", "host" ],
             [ "-bios", "/opt/homebrew/share/qemu/edk2-aarch64-code.fd" ],                                         
-            [ "-device", "virtio-net,netdev=forward,id=net0,mac=${var.vm_mac_addr}"],
+#            [ "-device", "virtio-net,netdev=forward,id=net0,mac=${var.vm_mac_addr}"],
+            [ "-device", "virtio-net,netdev=forward,id=net0"],
             [ "-netdev", "user,hostfwd=tcp::{{ .SSHHostPort }}-:22,id=forward"],
             [ "-cdrom", "cloud/seed.img" ]            
         ]  

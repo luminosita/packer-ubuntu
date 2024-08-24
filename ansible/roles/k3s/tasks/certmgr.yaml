@@ -1,0 +1,24 @@
+- name: Check if Cert Manager Exists
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: cert-manager
+  register: k3s_certmgr_status
+
+- name: Deploy Cert Manager
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - kubectl apply -f {{ certmgr_path }}
+  when: k3s_certmgr_status.resources is defined and k3s_certmgr_status.resources|length == 0
+
+- name: Wait for Cert Manager to be in Running status
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: cert-manager
+    label_selectors:
+      - app.kubernetes.io/name=cert-manager
+    wait: yes
+    wait_condition:
+      status: True
+      type: Ready
+    wait_timeout: 120
+

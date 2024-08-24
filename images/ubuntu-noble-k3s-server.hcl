@@ -1,10 +1,11 @@
-vm_name             = "ubuntu-noble-k3s-server"
-vm_version          = "1.0"
-
 vm_base_name        = "ubuntu-noble-ansible" 
 vm_base_version     = "1.0"
 
-vm_disk_size        = "10G"
+ansible_operation   = "bootstrap,server,network,certmgr,config,istio"
 
-ansible_operation   = "bootstrap,server,istio"
+ansible_ssh_host        = "localhost"
+ansible_ssh_port        = 60022
+ansible_ssh_username    = "ubuntu"
+ansible_ssh_password    = "ubuntu"
+
 

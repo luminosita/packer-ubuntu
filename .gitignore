@@ -15,3 +15,5 @@ temp/
 .DS_Store
 QEMU_EFI.fd
 cloud/seed.img
+python-venv/
+k3s.token
