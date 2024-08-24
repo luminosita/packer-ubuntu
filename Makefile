@@ -12,13 +12,15 @@
 #   See the License for the specific language governing permissions and
 #  limitations under the License.
 
-.PHONY: build-focal build-jammy validate-packer validate-cloudinit validate
-
 include common.mk
 
 init-qemu:
 	$(info PACKER: Init Packer plugins)
 	packer init ${QEMU_FOLDER}
+
+init-do:
+	$(info PACKER: Init Packer plugins)
+	packer init ${DO_FOLDER}
 
 build-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Build Ansible template image (QEMU, AMD64))
@@ -52,6 +54,14 @@ build-noble-k3s-istio-qemu-arm: validate-arm
 	$(info PACKER: Remote configure Istio Mesh (QEMU, ARM64))
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
 
+build-k3s-server-do-snapshot: validate-do
+	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
+	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=base.qemu.base ${DO_FOLDER}
+
+build-k3s-agent-do-snapshot: validate-do
+	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
+	packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=base.qemu.base ${DO_FOLDER}
+
 validate-amd: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
 	packer validate -var arch="amd" ${QEMU_FOLDER}
@@ -59,6 +69,10 @@ validate-amd: init-qemu
 validate-arm: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
 	packer validate -var arch="arm" ${QEMU_FOLDER}
+
+validate-do: init-do
+	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
+	packer validate ${DO_FOLDER}
 
 validate-cloudinit: init-qemu
 	$(info CLOUD-INIT: Validating Ubuntu 24.04 (Noble Numbat) Cloud-Config File)

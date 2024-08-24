@@ -9,10 +9,5 @@ packer {
       version = ">= 1.1.1"
       source = "github.com/hashicorp/ansible"
     }
-
-    digitalocean = {
-      version = ">= 1.4.0"
-      source  = "github.com/digitalocean/digitalocean"
-    }
   } 
 }
