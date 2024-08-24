@@ -43,10 +43,11 @@ source "null" "ansible" {
 }
 
 source "digitalocean" "example" {
-  image        = "ubuntu-22-04-x64"
-  region       = "fra1"
-  size         = "s-2vcpu-4gb"
-  ssh_username = "root"
+    api_token    = "aaa"
+    image        = "ubuntu-22-04-x64"
+    region       = "fra1"
+    size         = "s-2vcpu-4gb"
+    ssh_username = "root"
 }
 
 
