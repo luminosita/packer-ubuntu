@@ -18,3 +18,4 @@ cloud/seed.img
 python-venv/
 k3s.token
 hcl/digitalocean/vars.auto.pkrvars.hcl
+hcl/qemu/vars.auto.pkrvars.hcl
