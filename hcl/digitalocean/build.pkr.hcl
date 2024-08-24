@@ -18,7 +18,7 @@
 // }
 
 build {
-    name = "ubuntu"
+    name = "k3s"
     
     sources = ["source.digitalocean.snapshot"]
 

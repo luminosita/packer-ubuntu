@@ -35,7 +35,7 @@ source "qemu" "base" {
     headless        = true # NOTE: set this to true when using in CI Pipelines
 }
 
-source "null" "ansible" {
+source "null" "ssh" {
     ssh_host        = "${var.ansible_ssh_host}"
     ssh_port        = "${var.ansible_ssh_port}"
     ssh_username    = "${var.ansible_ssh_username}"

@@ -32,35 +32,35 @@ build-noble-ansible-qemu-arm: validate-arm
 
 build-noble-k3s-server-qemu-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Remote configure K3S Server (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_FOLDER}
 
 build-noble-k3s-server-qemu-arm: validate-arm
 	$(info PACKER: Remote configure K3S Server (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_FOLDER}
 
 build-noble-k3s-agent-qemu-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Remote configure K3S Agent (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_FOLDER}
 
 build-noble-k3s-agent-qemu-arm: validate-arm
 	$(info PACKER: Remote configure K3S Agent (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_FOLDER}
 
 build-noble-k3s-istio-qemu-amd: validate-amd
 	$(info PACKER: Remote configure Istio Mesh (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_FOLDER}
 
 build-noble-k3s-istio-qemu-arm: validate-arm
 	$(info PACKER: Remote configure Istio Mesh (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ansible ${QEMU_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_FOLDER}
 
 build-k3s-server-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
-	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=base.qemu.base ${DO_FOLDER}
+	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_FOLDER}
 
 build-k3s-agent-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
-	packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=base.qemu.base ${DO_FOLDER}
+	packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_FOLDER}
 
 validate-amd: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)

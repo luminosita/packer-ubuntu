@@ -26,6 +26,9 @@ ssh ubuntu@127.0.0.1 -p 60022
 
 packer DigitalOcean for k8s
 
+HCP Vault for API token
+HCP Packer for metadata
+
 Start cockpit as non-root
 Start qemu as non-root
 Checksum?
