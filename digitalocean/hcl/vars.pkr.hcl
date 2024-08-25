@@ -1,5 +1,16 @@
 variable "api_token" {
     type    = string
+    default = env("API_TOKEN")
+}
+
+variable "k3s_token" {
+    type    = string
+    default = env("K3S_TOKEN")
+}
+
+variable "k3s_cluster_cidr" {
+    type    = string
+    default = env("K3S_CLUSTER_CIDR")
 }
 
 variable "vm_base_image" {

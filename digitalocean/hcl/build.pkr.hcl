@@ -4,7 +4,7 @@
 //     sources = [ "source.null.ansible" ]
 
 //     provisioner "shell" {
-//         scripts = [ "scripts/python.sh" ]
+//         scripts = [ "digitalocean/scripts/python.sh" ]
 //     }
 
 //     provisioner "ansible-local" {
@@ -20,9 +20,17 @@
 build {
     name = "k3s"
     
+    // sources = ["source.null.test"]
     sources = ["source.digitalocean.snapshot"]
 
     provisioner "shell" {
+        env     = {
+            "K3S_TOKEN" = "${var.k3s_token}"
+            "K3S_CLUSTER_CIDR" = "${var.k3s_cluster_cidr}"
+        }
+
+//        inline = [ "echo $K3S_TOKEN" ]
+
         scripts = "${var.scripts}" 
     }
 }

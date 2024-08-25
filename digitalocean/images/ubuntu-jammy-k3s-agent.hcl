@@ -12,6 +12,6 @@ vm_base_image        = "ubuntu-22-04-x64"
 // ansible_ssh_password    = "ubuntu"
 
 scripts = [
-    "scripts/init.sh",
-    "scripts/k3s-agent.sh"
+    "digitalocean/scripts/init.sh",
+    "digitalocean/scripts/k3s-agent.sh"
 ]

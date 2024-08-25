@@ -57,6 +57,7 @@ build-noble-k3s-istio-qemu-arm: validate-arm
 build-k3s-server-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
 	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_FOLDER}
+	# packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.null.test ${DO_FOLDER}
 
 build-k3s-agent-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))

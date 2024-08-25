@@ -1,9 +1,6 @@
-// source "null" "ansible" {
-//     ssh_host        = "${var.ansible_ssh_host}"
-//     ssh_port        = "${var.ansible_ssh_port}"
-//     ssh_username    = "${var.ansible_ssh_username}"
-//     ssh_password    = "${var.ansible_ssh_password}"
-// }
+source "null" "test" {
+    communicator = "none"
+}
 
 source "digitalocean" "snapshot" {
     api_token       = "${var.api_token}"
