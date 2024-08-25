@@ -1,6 +1,6 @@
-vm_name              = "k3s-agent"
+vm_name              = "k3s-agent-ubuntu-noble"
 
-vm_base_image        = "ubuntu-22-04-x64" 
+vm_base_image        = "ubuntu-24-04-x64" 
 
 // vm_base_version     = "1.0"
 

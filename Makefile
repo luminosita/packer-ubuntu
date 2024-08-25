@@ -111,9 +111,8 @@ generate-k3s-token:
 	$(info OLD K3S TOKEN: ${K3S_TOKEN_VAR})
 
 	NEW_TOKEN=$(shell docker run --entrypoint "" -it --rm rancher/k3s:latest /bin/k3s token generate); \
+	printf '%s' "$$NEW_TOKEN" >${K3S_TOKEN_FILE}
 
-	echo $$NEW_TOKEN > ${K3S_TOKEN_FILE}; \
-	
 	$(info NEW K3S TOKEN: ${NEW_TOKEN})
 
 prepare-python-amd:

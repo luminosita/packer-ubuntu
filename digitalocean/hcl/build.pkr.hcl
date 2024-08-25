@@ -25,8 +25,9 @@ build {
 
     provisioner "shell" {
         env     = {
-            "K3S_TOKEN" = "${var.k3s_token}"
-            "K3S_CLUSTER_CIDR" = "${var.k3s_cluster_cidr}"
+            "K3S_TOKEN"         = "${var.k3s_token}"
+            "K3S_CLUSTER_CIDR"  = "${var.k3s_cluster_cidr}"
+            "K3S_SERVER_IP"     = "${var.k3s_server_ip}"
         }
 
 //        inline = [ "echo $K3S_TOKEN" ]

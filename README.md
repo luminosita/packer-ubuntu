@@ -24,7 +24,11 @@ qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio
 
 ssh ubuntu@127.0.0.1 -p 60022
 
+
 packer DigitalOcean for k8s
+    from binaries not installer
+
+Bug: NON-ROOT USER DigitalOcean
 
 HCP Packer for metadata
 

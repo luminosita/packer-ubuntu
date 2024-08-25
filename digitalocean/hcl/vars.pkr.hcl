@@ -13,6 +13,11 @@ variable "k3s_cluster_cidr" {
     default = env("K3S_CLUSTER_CIDR")
 }
 
+variable "k3s_server_ip" {
+    type    = string
+    default = env("K3S_SERVER_IP")
+}
+
 variable "vm_base_image" {
     type    = string
     default = "ubuntu-22-04-x64"
