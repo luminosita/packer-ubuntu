@@ -57,11 +57,12 @@ build-noble-k3s-istio-qemu-arm: validate-arm
 build-k3s-server-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
 	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_FOLDER}
-	# packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.null.test ${DO_FOLDER}
+	# packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.null.ssh ${DO_FOLDER}
 
 build-k3s-agent-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
 	packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_FOLDER}
+	# packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=k3s.null.ssh ${DO_FOLDER}
 
 validate-amd: init-qemu
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
