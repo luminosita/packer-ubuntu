@@ -1,29 +1,44 @@
 terraform {
+  required_version = ">= 1.9.5"
+
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.16.1"
+      version = ">= 2.32.0"
     }
+
     local = {
       source  = "hashicorp/local"
-      version = "2.2.3"
+      version = ">= 2.5.1"
     }
+
     http = {
       source  = "hashicorp/http"
-      version = "3.2.1"
+      version = ">= 3.4.4"
     }
+
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.15.0"
+    }
+
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.14.0"
+      version = ">= 1.14.0"
+    }
+
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = ">= 2.40.0"
     }
   }
 }
 
 locals {
   istio_namespace = "istio-system"
-  istio_version   = "1.16"
+  istio_version   = "1.23"
   istio_repo      = "https://raw.githubusercontent.com/istio/istio/release-"
-  dash_version    = "v2.6.1"
+  dash_version    = "v7.5.0"
   dash_repo       = "https://raw.githubusercontent.com/kubernetes/dashboard/"
 
   modules = [
@@ -35,9 +50,28 @@ output "modules" {
   value = local.modules
 }
 
-provider "kubernetes" {
-  config_path    = "~/.kube/config"
-  config_context = "default"
+# provider "kubernetes" {
+#   config_path    = "~/.kube/config"
+#   config_context = "default"
+# }
+
+provider "digitalocean" {
+  token = var.api_token
+}
+
+module "k3s" {
+  source = "./modules/k3s"
+
+  count = contains(local.modules, "k3s") ? 1 : 0
+
+  vm_server_base_image  = var.vm_server_base_image
+  vm_agent_base_image   = var.vm_agent_base_image
+  vm_server_name        = var.vm_server_name
+  vm_agent_name         = var.vm_agent_name
+
+  do_ssh_key_name       = var.do_ssh_key_name
+  do_region             = var.do_region
+  do_size               = var.do_size
 }
 
 module "istio-cert-manager-module" {

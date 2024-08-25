@@ -17,21 +17,36 @@ Lastly, add yourself to the libvirt and kvm groups
  
 And check to see if the bridge network is running properly
 
- brctl show 
+brctl show 
 
- sudo apt install cloud-init-localds
+****
 
-qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 -bios QEMU_EFI.fd -nographic -drive if=virtio,format=qcow2,file=output/test-ubuntu-noble-1.0/test-ubuntu-noble-1.0
+sudo qemu-system-x86_64 -m 2G -smp 2 -enable-kvm -cpu host -nic user,hostfwd=tcp::60022-:22 -boot strict=off -device qemu-xhci -device usb-kbd -device virtio-gpu-pci -nographic -drive if=virtio,format=qcow2,file=output/packerubuntu-24.04/packerubuntu-24.04
+
+sudo qemu-system-x86_64 -cpu host -m 2G -enable-kvm -nographic -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 -drive if=virtio,format=raw,file=output/packerubuntu-24.04/packerubuntu-24.04 -bios /usr/share/ovmf/OVMF.fd
+
+MacOS:
+Download QEMU_EFI.rd
+curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
+
+qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 -boot strict=off -device qemu-xhci -device usb-kbd -device virtio-gpu-pci -bios /opt/homebrew/share/qemu/edk2-aarch64-code.fd -nographic -drive if=virtio,format=raw,file=output/packerubuntu-24.04/packerubuntu-24.04
+
+qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 -bios QEMU_EFI.fd -nographic -drive if=virtio,format=qcow2,file=output/ubuntu-noble-ansible-1.0/ubuntu-noble-ansible-2.0
 
 ssh ubuntu@127.0.0.1 -p 60022
+
+
+curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" K3S_TOKEN="2y6rrd.hnshbds0iyj6yq9t" \
+    INSTALL_K3S_EXEC="--flannel-backend=none --cluster-cidr=$K3S_CLUSTER_CIDR --disable-network-policy --disable=traefik" sh -s -
+
+sudo apt install cloud-init-localds
 
 
 Bug: NON-ROOT USER DigitalOcean
 
 Terraform:
 Тest k3s cluster with three nodes
-K3S node tokens for server
-Fix scripts in base builder
+K3S node tokens for agents
 
 Start cockpit as non-root
 Start qemu as non-root
