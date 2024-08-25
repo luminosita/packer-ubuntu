@@ -14,6 +14,7 @@ Lastly, add yourself to the libvirt and kvm groups
 
  usermod -aG libvirt $USER 
  usermod -aG kvm $USER 
+ 
 And check to see if the bridge network is running properly
 
  brctl show 
@@ -25,11 +26,12 @@ qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio
 ssh ubuntu@127.0.0.1 -p 60022
 
 
-packer DigitalOcean for k8s
-
 Bug: NON-ROOT USER DigitalOcean
 
-HCP Packer for metadata
+Terraform:
+Тest k3s cluster with three nodes
+K3S node tokens for server
+Fix scripts in base builder
 
 Start cockpit as non-root
 Start qemu as non-root
@@ -37,8 +39,4 @@ Checksum?
 
 Change passwd ubuntu user
 Qemu Builder not resizing image
-
-Terraform:
-Тest k3s cluster with three nodes
-K3S node tokens for server
-Fix scripts in base builder
+HCP Packer for metadata

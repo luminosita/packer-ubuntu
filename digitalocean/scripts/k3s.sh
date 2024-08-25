@@ -16,6 +16,8 @@ fi
 
 # https://www.bashcookbook.com/bashinfo/source/bash-4.0/examples/scripts/timeout3
 
+# https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml
+
 if [ -f /etc/systemd/system/k3s-agent.service.env ]; then
     echo "==> K3s Agent Service ENV"
     cat /etc/systemd/system/k3s-agent.service.env
