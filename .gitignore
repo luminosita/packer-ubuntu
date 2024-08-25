@@ -19,3 +19,4 @@ python-venv/
 k3s.token
 digitalocean/hcl/vars.auto.pkrvars.hcl
 qemu/hcl/vars.auto.pkrvars.hcl
+k3s-server.token

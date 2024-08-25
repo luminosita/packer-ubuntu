@@ -26,7 +26,6 @@ ssh ubuntu@127.0.0.1 -p 60022
 
 
 packer DigitalOcean for k8s
-    from binaries not installer
 
 Bug: NON-ROOT USER DigitalOcean
 

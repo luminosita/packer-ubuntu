@@ -20,18 +20,23 @@
 build {
     name = "k3s"
     
-    // sources = ["source.null.test"]
-    sources = ["source.digitalocean.snapshot"]
+//    sources = ["source.digitalocean.snapshot"]
+    sources = ["source.null.ssh"]
+
+    provisioner "file" {
+        source          = "digitalocean/scripts/timer.sh"
+        destination     = "timer.sh"
+    }
 
     provisioner "shell" {
-        env     = {
-            "K3S_TOKEN"         = "${var.k3s_token}"
-            "K3S_CLUSTER_CIDR"  = "${var.k3s_cluster_cidr}"
-            "K3S_SERVER_IP"     = "${var.k3s_server_ip}"
-        }
-
-//        inline = [ "echo $K3S_TOKEN" ]
+        env = "${var.script_env}"
 
         scripts = "${var.scripts}" 
+    }
+
+    provisioner "file" {
+        source          = "/tmp/server-token"
+        destination     = "k3s-server.token"
+        direction       = "download"
     }
 }

@@ -3,6 +3,12 @@ set -x
 
 export ISTIO_VERSION=1.23.0
 
-curl -L https://istio.io/downloadIstio | sh -
+if [ -f /etc/rancher/k3s/k3s.yaml ]; then
+    echo "==> Installing Istio"
 
-./istio-1.23.0/bin/istioctl x precheck
+    curl -L https://istio.io/downloadIstio | sh -
+
+    ./istio-1.23.0/bin/istioctl x precheck
+else
+    echo "==> K3s server unavailable. Skipping Istio installation"
+fi
