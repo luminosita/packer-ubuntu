@@ -20,8 +20,8 @@
 build {
     name = "k3s"
     
-//    sources = ["source.digitalocean.snapshot"]
-    sources = ["source.null.ssh"]
+    sources = ["source.digitalocean.snapshot"]
+//    sources = ["source.null.ssh"]
 
     provisioner "file" {
         source          = "digitalocean/scripts/timer.sh"
