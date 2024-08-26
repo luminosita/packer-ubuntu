@@ -1,3 +1,32 @@
+build {
+    name = "k3s"
+    
+    sources = ["source.digitalocean.snapshot"]
+
+    provisioner "shell" {
+        env = "${var.script_env}"
+
+        scripts = "${var.scripts}" 
+    }
+}
+
+// build {
+//     name = "test"
+    
+//     sources = ["source.null.ssh"]
+
+//     provisioner "file" {
+//         source          = "digitalocean/scripts/timer.sh"
+//         destination     = "timer.sh"
+//     }
+
+//     provisioner "shell" {
+//         env = "${var.script_env}"
+
+//         scripts = "${var.scripts}" 
+//     }
+// }
+
 // build {
 //     name = "ansible-remote"
    
@@ -17,26 +46,3 @@
 //     }
 // }
 
-build {
-    name = "k3s"
-    
-    sources = ["source.digitalocean.snapshot"]
-//    sources = ["source.null.ssh"]
-
-    // provisioner "file" {
-    //     source          = "digitalocean/scripts/timer.sh"
-    //     destination     = "timer.sh"
-    // }
-
-    provisioner "shell" {
-        env = "${var.script_env}"
-
-        scripts = "${var.scripts}" 
-    }
-
-    provisioner "file" {
-        source          = "/tmp/server-token"
-        destination     = "/tmp/k3s-server.token"
-        direction       = "download"
-    }
-}

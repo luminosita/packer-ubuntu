@@ -1,4 +1,34 @@
-### Install Digital Ocean HCP Vault CLI
+### Install Vault, Packer and Terraform
+
+```bash
+$ brew tap hashicorp/tap
+$ brew install hashicorp/tap/hcp
+$ brew install hashicorp/tap/packer
+$ brew install hashicorp/tap/terraform
+```
+Install JSON parser CLI
+```bash
+$ brew install jq
+```
+
+### Initialize HCP Vault CLI
+
+Login to Vault
+```bash
+$ hcp auth login
+The default web browser has been opened at https://auth.idp.hashicorp.com/oauth2/auth. Please continue the login in the web browser.
+Success!
+Successfully logged in!
+
+$ hcp profile init --vault-secrets
+  ✓ Organization with name "hashicorp-edu-org" and ID "12cd56-88d2-69fb-8cc1-s3sAm3st" selected
+  ✓ Project with name "ProductionProject" and ID "12cd56-704c-46af-8ba5-mAtr3x" selected
+  ✓ App with name "WebApplication" selected
+
+$ hcp vault-secrets secrets list
+Name      Latest Version  Created At
+username  2               2023-05-24T12:22:18.395Z
+```
 
 ### Initialize Digital Ocean Packer
 ```bash
@@ -129,21 +159,33 @@ curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release
 $ qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 -bios QEMU_EFI.fd -nographic -drive if=virtio,format=qcow2,file=output/ubuntu-noble-ansible-1.0/ubuntu-noble-ansible-1.0
 ```
 
-### SSH Access to running VM
+### SSH Access to Running VM
 
 ```bash
 $ ssh ubuntu@127.0.0.1 -p 60022
 ```
 
+### Configure `kubectl` on Local Machine
+
+Copy k3s kubctl access configuration to `~/.kube/config`
+
+```bash
+$ scp root@<control-node-ip> /etc/rancher/k3s/k3s.yaml ~/.kube/config
+```
+
+Run `kubectl` and retrieve cluster node list
+```bash 
+$ kubectl get nodes
+```
+
 +++++++++++++++
 
 Bug: NON-ROOT USER DigitalOcean
-Bug: Packer Snapshot is registered as server node
-
 
 Terraform:
-Тest k3s cluster with three nodes
 Verify CLUSTER-CIDR
+Separate Makefile for DigitalOcean and Proxmox
+Proxmox provider for local server VMs
 
 Start cockpit as non-root on Linux
 Start qemu as non-root on Linux
@@ -159,4 +201,3 @@ Use Terraform scripts for Packer server/agent final images
 Review QEMU images
 Finalize README.md
 
-Automate /tmp/k3s-server.token copy to ./

@@ -67,9 +67,7 @@ hcl-noble-k3s-istio-qemu-arm: validate-arm
 
 hcl-k3s-server-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
-	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_HCL_FOLDER} && \
-	cp /tmp/k3s-server.token .
-	
+	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_HCL_FOLDER}
 	# packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.null.ssh ${DO_HCL_FOLDER}
 
 hcl-k3s-agent-do-snapshot: validate-do

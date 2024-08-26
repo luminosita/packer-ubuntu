@@ -27,6 +27,11 @@ variable "do_size" {
     default = "s-2vcpu-4gb"
 }            
 
+variable "ssh_username" {
+    type    = string
+    default = "root"
+}            
+
 variable "script_env" {
     type = map(string)
 }            
