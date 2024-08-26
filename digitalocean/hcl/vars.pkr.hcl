@@ -29,7 +29,18 @@ variable "do_size" {
 
 variable "ssh_username" {
     type    = string
-    default = "root"
+}            
+
+variable "do_ssh_key_id" {
+    type    = number
+}            
+
+variable "ssh_public_key_file" {
+    type    = string
+}            
+
+variable "ssh_private_key_file" {
+    type    = string
 }            
 
 variable "script_env" {

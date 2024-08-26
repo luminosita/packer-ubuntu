@@ -16,7 +16,7 @@ build {
 //     sources = ["source.null.ssh"]
 
 //     provisioner "file" {
-//         source          = "digitalocean/scripts/timer.sh"
+//         source          = "./scripts/timer.sh"
 //         destination     = "timer.sh"
 //     }
 
@@ -33,7 +33,7 @@ build {
 //     sources = [ "source.null.ansible" ]
 
 //     provisioner "shell" {
-//         scripts = [ "digitalocean/scripts/python.sh" ]
+//         scripts = [ "./scripts/python.sh" ]
 //     }
 
 //     provisioner "ansible-local" {

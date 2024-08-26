@@ -10,7 +10,7 @@ if [ ! -f /etc/systemd/system/k3s.service.env ]; then
     curl -sfL https://get.k3s.io | sh -
 else 
     echo "==> K3s Service ENV"
-    cat /etc/systemd/system/k3s.service.env
+    sudo cat /etc/systemd/system/k3s.service.env
 
     while [ ! -f /etc/rancher/k3s/k3s.yaml ]; do echo 'Waiting for K3s server to start...'; sleep 1; done
 fi
@@ -18,7 +18,7 @@ fi
 #Check if k3s-agent service is installed and print environment variables
 if [ -f /etc/systemd/system/k3s-agent.service.env ]; then
     echo "==> K3s Agent Service ENV"
-    cat /etc/systemd/system/k3s-agent.service.env
+    sudo cat /etc/systemd/system/k3s-agent.service.env
 fi
 
 #Check if server is installed and copy node token
