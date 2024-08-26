@@ -17,77 +17,55 @@ NOBLE_K3S_SERVER_VARS_FILE:=./qemu/images/ubuntu-noble-k3s-server.hcl
 NOBLE_K3S_AGENT_VARS_FILE:=./qemu/images/ubuntu-noble-k3s-agent.hcl
 NOBLE_K3S_ISTIO_VARS_FILE:=./qemu/images/ubuntu-noble-k3s-istio.hcl
 
-DO_K3S_SERVER_VARS_FILE:=./digitalocean/images/ubuntu-noble-k3s-server.hcl
-DO_K3S_AGENT_VARS_FILE:=./digitalocean/images/ubuntu-noble-k3s-agent.hcl
-
 QEMU_HCL_FOLDER:=./qemu/hcl/
-DO_HCL_FOLDER:=./digitalocean/hcl/
 
 include common.mk
 
-init-hcl-qemu:
+init-hcl:
 	$(info PACKER: Init Packer plugins)
 	packer init ${QEMU_HCL_FOLDER}
 
-init-hcl-do:
-	$(info PACKER: Init Packer plugins)
-	packer init ${DO_HCL_FOLDER}
-
-hcl-noble-ansible-qemu-amd: validate-amd  validate-cloudinit
+hcl-noble-ansible-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Build Ansible template image (QEMU, AMD64))
 	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_HCL_FOLDER}
 
-hcl-noble-ansible-qemu-arm: validate-arm
+hcl-noble-ansible-arm: validate-arm
 	$(info PACKER: Build Ansible template image (QEMU, ARM64))
 	packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_HCL_FOLDER}
 
-hcl-noble-k3s-server-qemu-amd: validate-amd  validate-cloudinit
+hcl-noble-k3s-server-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Remote configure K3S Server (QEMU, AMD64))
 	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
 
-hcl-noble-k3s-server-qemu-arm: validate-arm
+hcl-noble-k3s-server-arm: validate-arm
 	$(info PACKER: Remote configure K3S Server (QEMU, ARM64))
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
 
-hcl-noble-k3s-agent-qemu-amd: validate-amd  validate-cloudinit
+hcl-noble-k3s-agent-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Remote configure K3S Agent (QEMU, AMD64))
 	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
 
-hcl-noble-k3s-agent-qemu-arm: validate-arm
+hcl-noble-k3s-agent-arm: validate-arm
 	$(info PACKER: Remote configure K3S Agent (QEMU, ARM64))
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
 
-hcl-noble-k3s-istio-qemu-amd: validate-amd
+hcl-noble-k3s-istio-amd: validate-amd
 	$(info PACKER: Remote configure Istio Mesh (QEMU, AMD64))
 	packer build -var arch="amd" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
 
-hcl-noble-k3s-istio-qemu-arm: validate-arm
+hcl-noble-k3s-istio-arm: validate-arm
 	$(info PACKER: Remote configure Istio Mesh (QEMU, ARM64))
 	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
 
-hcl-k3s-server-do-snapshot: validate-do
-	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
-	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_HCL_FOLDER}
-	# packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.null.ssh ${DO_HCL_FOLDER}
-
-hcl-k3s-agent-do-snapshot: validate-do
-	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
-	packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_HCL_FOLDER}
-	# packer build -var-file=${DO_K3S_AGENT_VARS_FILE} -only=k3s.null.ssh ${DO_HCL_FOLDER}
-
-validate-amd: init-hcl-qemu
+validate-amd: init-hcl
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
 	packer validate -var arch="amd" ${QEMU_HCL_FOLDER}
 
-validate-arm: init-hcl-qemu
+validate-arm: init-hcl
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
 	packer validate -var arch="arm" ${QEMU_HCL_FOLDER}
 
-validate-do: init-hcl-do
-	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
-	packer validate ${DO_HCL_FOLDER}
-
-validate-cloudinit: init-hcl-qemu
+validate-cloudinit: init-hcl
 	$(info CLOUD-INIT: Validating Ubuntu 24.04 (Noble Numbat) Cloud-Config File)
 	cloud-init schema -c cloud/cloud.cfg
 

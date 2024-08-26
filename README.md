@@ -1,3 +1,4 @@
+## Prepare Installer Machine
 ### Install Vault, Packer and Terraform
 
 ```bash
@@ -29,10 +30,16 @@ $ hcp vault-secrets secrets list
 Name      Latest Version  Created At
 username  2               2023-05-24T12:22:18.395Z
 ```
+## Digital Ocean
+
+Change to `digitalocean` folder
+```bash
+$ cd digitalocean
+```
 
 ### Initialize Digital Ocean Packer
 ```bash
-$ make hcl-init-do
+$ make hcl-init
 ```
 
 ### Create Digital Ocean K3s Snapshots
@@ -43,21 +50,21 @@ For HA K3s Cluster start with creation of `Master Contol Node Server Snapshot`. 
 
 #### Create Digital Ocean Master Control Node K3s Server Snapshot
 ```bash
-make hcl-k3s-master-do-snapshot
+make hcl-k3s-master-snapshot
 ```
 
 For HA cluster option copy `/tmp/k3s-server.token` content to `k3s-server.token`, file used by Terraform to set proper environment variables into K3s services (`/etc/systemd/system/k3s-agent.service.env`)
 
 #### Create Digital Ocean Control Node K3s Server Snapshot
 ```bash
-make hcl-k3s-server-do-snapshot
+make hcl-k3s-server-snapshot
 ```
 
 For non HA cluster option copy `/tmp/k3s-server.token` to `k3s-server.token` after creation of `Control Node K3s Server Snapshot`
 
 #### Create Digital Ocean K3s Agent Snapshot
 ```bash
-make hcl-k3s-agent-do-snapshot
+make hcl-k3s-agent-snapshot
 ```
 Verify snapshots in Digital Ocean Control Panel under Manager -> Backups/Snapshots
 
@@ -70,42 +77,22 @@ Review terraform variables in `terraform/vars` and paste proper snapshot names f
 #### Init Digital Ocean Terraform
 
 ```bash
-$ cd terraform
-$ make init-tf-do
+$ make init-tf
 ```
 
 #### Run Digital Ocean Terraform
 
 ```bash
-$ make plan-k3s-do
+$ make plan-k3s
 ```
 
 Review Terraform plan and if everything is as expected,
 
 ```bash
-$ make apply-k3s-do
+$ make apply-k3s
 ```
 
-### Initialize QEMU Packer
-```bash
-$ make hcl-init-qemu
-```
-
-Prepare envirnment
-
-```bash
-$ make hcl-prepare-qemu
-```
-
-#### Create QEMU Control Node K3s Server Snapshot
-```bash
-$ make hcl-k3s-server-qemu
-```
-
-#### Create QEMU K3s Agent Snapshot
-```bash
-$ make hcl-k3s-agent-qemu
-```
+## QEMU
 
 ### Deploy KVM, QEMU and Cockpit on VM Server
 
@@ -165,6 +152,34 @@ $ qemu-system-aarch64 -M type=virt,accel=hvf -m 2G -smp 2 -cpu host -device virt
 $ ssh ubuntu@127.0.0.1 -p 60022
 ```
 
+### Setup QEMU
+
+Change to `qemu` folder
+```bash
+$ cd qemu
+```
+
+### Initialize QEMU Packer
+```bash
+$ make hcl-init
+```
+
+Prepare envirnment
+
+```bash
+$ make hcl-prepare
+```
+
+#### Create QEMU Control Node K3s Server Snapshot
+```bash
+$ make hcl-k3s-server
+```
+
+#### Create QEMU K3s Agent Snapshot
+```bash
+$ make hcl-k3s-agent
+```
+
 ### Configure `kubectl` on Local Machine
 
 Copy k3s kubctl access configuration to `~/.kube/config`
@@ -184,7 +199,6 @@ Bug: NON-ROOT USER DigitalOcean
 
 Terraform:
 Verify CLUSTER-CIDR
-Separate Makefile for DigitalOcean and Proxmox
 Proxmox provider for local server VMs
 
 Start cockpit as non-root on Linux
