@@ -78,7 +78,8 @@ module "k3s" {
   do_region               = var.do_region
   do_size                 = var.do_size
 
-  k3s_server_token_file   = var.k3s_server_token_file
+  ssh_username            = var.ssh_username
+  ssh_private_key_file    = var.ssh_private_key_file
 }
 
 module "istio-cert-manager-module" {

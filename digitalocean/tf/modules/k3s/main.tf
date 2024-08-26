@@ -33,8 +33,9 @@ data "digitalocean_ssh_key" "gianni" {
 data "external" "k3s-init-info" {
   program = ["/bin/bash", "../scripts/k3s-init-info.sh"]
   query = {
-    ip_address  = digitalocean_droplet.k3s_server.ipv4_address,
-    private_key = var.pvt_key
+    username            = var.ssh_username,
+    ip_address          = digitalocean_droplet.k3s_server.ipv4_address,
+    private_key_file    = var.ssh_private_key_file
   }
 }
 
@@ -48,9 +49,9 @@ resource "digitalocean_droplet" "k3s_server" {
 
     connection {
         host = self.ipv4_address
-        user = "root"
+        user = var.ssh_username
         type = "ssh"
-        private_key = file(var.pvt_key)
+        private_key = file(var.ssh_private_key_file)
         timeout = "2m"  
     }
 
@@ -74,9 +75,9 @@ resource "digitalocean_droplet" "k3s_agent" {
 
     connection {
         host = self.ipv4_address
-        user = "root"
+        user = var.ssh_username
         type = "ssh"
-        private_key = file(var.pvt_key)
+        private_key = file(var.ssh_private_key_file)
         timeout = "2m"  
     }
 
@@ -86,7 +87,7 @@ resource "digitalocean_droplet" "k3s_agent" {
             "K3S_IP" = digitalocean_droplet.k3s_server.ipv4_address_private,
         }) 
         
-        destination = "/etc/systemd/system/k3s-agent.service.env"
+        destination = "/home/${var.ssh_username}/k3s-agent.service.env"
     }
 
     provisioner "remote-exec" {
@@ -114,9 +115,9 @@ resource "digitalocean_droplet" "k3s_agent" {
 
 #     connection {
 #         host = var.ips[count.index]
-#         user = "root"
+#         user = var.ssh_username
 #         type = "ssh"
-#         private_key = file(var.pvt_key)
+#         private_key = file(var.ssh_private_key_file)
 #         timeout = "2m"  
 #     }
 

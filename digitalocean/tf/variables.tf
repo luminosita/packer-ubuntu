@@ -15,12 +15,14 @@ variable "vm_agent_base_image" {
 
 variable "vm_server_name" {
     type    = string
-    default = "k3s-server-ubuntu-noble"
 }
 
 variable "vm_agent_name" {
     type    = string
-    default = "k3s-agent-ubuntu-noble"
+}
+
+variable "ssh_username" {
+    type    = string
 }
 
 variable "do_ssh_key_name" {
@@ -37,10 +39,9 @@ variable "do_size" {
     default = "s-2vcpu-4gb"
 }            
 
-variable "k3s_server_token_file" {
-    type    = string
-    default = "../../k3s-server.token"
-}            
+variable "ssh_private_key_file" {
+    type = string
+}
 
 variable "ingress_domain" {
   type = string

@@ -185,7 +185,7 @@ $ make hcl-k3s-agent
 Copy k3s kubctl access configuration to `~/.kube/config`
 
 ```bash
-$ scp root@<control-node-ip> /etc/rancher/k3s/k3s.yaml ~/.kube/config
+$ scp k3s@<control-node-ip> /etc/rancher/k3s/k3s.yaml ~/.kube/config
 ```
 
 Run `kubectl` and retrieve cluster node list
