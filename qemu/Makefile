@@ -12,58 +12,58 @@
 #   See the License for the specific language governing permissions and
 #  limitations under the License.
 
-NOBLE_ANSIBLE_VARS_FILE:=./qemu/images/ubuntu-noble-ansible.hcl
-NOBLE_K3S_SERVER_VARS_FILE:=./qemu/images/ubuntu-noble-k3s-server.hcl
-NOBLE_K3S_AGENT_VARS_FILE:=./qemu/images/ubuntu-noble-k3s-agent.hcl
-NOBLE_K3S_ISTIO_VARS_FILE:=./qemu/images/ubuntu-noble-k3s-istio.hcl
+NOBLE_ANSIBLE_VARS_FILE:=./images/ubuntu-noble-ansible.hcl
+NOBLE_K3S_SERVER_VARS_FILE:=./images/ubuntu-noble-k3s-server.hcl
+NOBLE_K3S_AGENT_VARS_FILE:=./images/ubuntu-noble-k3s-agent.hcl
+NOBLE_K3S_ISTIO_VARS_FILE:=./images/ubuntu-noble-k3s-istio.hcl
 
-QEMU_HCL_FOLDER:=./qemu/hcl/
+HCL_FOLDER:=./hcl/
 
 include common.mk
 
 init-hcl:
 	$(info PACKER: Init Packer plugins)
-	packer init ${QEMU_HCL_FOLDER}
+	packer init ${HCL_FOLDER}
 
 hcl-noble-ansible-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Build Ansible template image (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_HCL_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${HCL_FOLDER}
 
 hcl-noble-ansible-arm: validate-arm
 	$(info PACKER: Build Ansible template image (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${QEMU_HCL_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_ANSIBLE_VARS_FILE} -only=base.qemu.base ${HCL_FOLDER}
 
 hcl-noble-k3s-server-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Remote configure K3S Server (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${HCL_FOLDER}
 
 hcl-noble-k3s-server-arm: validate-arm
 	$(info PACKER: Remote configure K3S Server (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_SERVER_VARS_FILE} -only=ansible-remote.null.ssh ${HCL_FOLDER}
 
 hcl-noble-k3s-agent-amd: validate-amd  validate-cloudinit
 	$(info PACKER: Remote configure K3S Agent (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${HCL_FOLDER}
 
 hcl-noble-k3s-agent-arm: validate-arm
 	$(info PACKER: Remote configure K3S Agent (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_AGENT_VARS_FILE} -only=ansible-remote.null.ssh ${HCL_FOLDER}
 
 hcl-noble-k3s-istio-amd: validate-amd
 	$(info PACKER: Remote configure Istio Mesh (QEMU, AMD64))
-	packer build -var arch="amd" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
+	packer build -var arch="amd" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${HCL_FOLDER}
 
 hcl-noble-k3s-istio-arm: validate-arm
 	$(info PACKER: Remote configure Istio Mesh (QEMU, ARM64))
-	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${QEMU_HCL_FOLDER}
+	packer build -var arch="arm" -var-file=${NOBLE_K3S_ISTIO_VARS_FILE} -only=ansible-remote.null.ssh ${HCL_FOLDER}
 
 validate-amd: init-hcl
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
-	packer validate -var arch="amd" ${QEMU_HCL_FOLDER}
+	packer validate -var arch="amd" ${HCL_FOLDER}
 
 validate-arm: init-hcl
 	$(info PACKER: Validating Template with Ubuntu 24.04 (Noble Numbat) Packer Variables)
-	packer validate -var arch="arm" ${QEMU_HCL_FOLDER}
+	packer validate -var arch="arm" ${HCL_FOLDER}
 
 validate-cloudinit: init-hcl
 	$(info CLOUD-INIT: Validating Ubuntu 24.04 (Noble Numbat) Cloud-Config File)
@@ -84,7 +84,7 @@ seed-amd:
 
 qemu-efi:
 	$(info CURL: Download QEMU EFI bios)
-	curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd -o QEMU_EFI.fd
+	curl -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/EFI.fd -o EFI.fd
 
 download-noble-cloud-amd:
 	$(info CURL: Ubuntu 24.04 (Noble Numbat) and setup local VM images repository)

@@ -44,7 +44,7 @@ $ make hcl-init
 
 ### Create Digital Ocean K3s Snapshots
 
-Review snapshot variables in `digitalocean/images` and make necessary corrections.
+Review snapshot variables in `images` and make necessary corrections.
 
 For HA K3s Cluster start with creation of `Master Contol Node Server Snapshot`. For the regular K3s Cluster start with creation of `Control Node Server Snapshot`
 

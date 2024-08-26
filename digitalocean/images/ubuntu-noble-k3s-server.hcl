@@ -9,9 +9,9 @@ script_env = {
 }
 
 scripts = [
-    "digitalocean/scripts/init.sh",
-    "digitalocean/scripts/k3s.sh",
-    "digitalocean/scripts/istio.sh",
+    "scripts/init.sh",
+    "scripts/k3s.sh",
+    "scripts/istio.sh",
 ]
 
 

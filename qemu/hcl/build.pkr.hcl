@@ -27,7 +27,7 @@ build {
 
     #Prepare image logs for download
     provisioner "shell" {
-        scripts = [ "qemu/scripts/cloud-init.sh" ]
+        scripts = [ "scripts/cloud-init.sh" ]
     }
 
     #Create local (host) logs folder
@@ -46,9 +46,9 @@ build {
 
     provisioner "shell" {
         scripts = [
-#            "qemu/scripts/network.sh",
-            "qemu/scripts/sshd.sh",  
-            "qemu/scripts/cleanup.sh"
+#            "scripts/network.sh",
+            "scripts/sshd.sh",  
+            "scripts/cleanup.sh"
         ]
     }
     # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
@@ -71,7 +71,7 @@ build {
     sources = [ "source.qemu.base" ]
 
     provisioner "shell" {
-        scripts = [ "qemu/scripts/python.sh" ]
+        scripts = [ "scripts/python.sh" ]
     }
     provisioner "ansible" {
         playbook_file = "ansible/playbook.yaml"
