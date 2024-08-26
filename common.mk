@@ -1,4 +1,4 @@
-K3S_TOKEN_FILE:=./k3s.token
+K3S_TOKEN_FILE:=./k3s-server.token
 
 ifneq ("$(wildcard $(K3S_TOKEN_FILE))","") 
 	K3S_TOKEN_VAR:=$(shell cat ${K3S_TOKEN_FILE})

@@ -12,14 +12,14 @@ terraform {
       version = ">= 2.5.1"
     }
 
-    http = {
-      source  = "hashicorp/http"
-      version = ">= 3.4.4"
-    }
-
     helm = {
       source  = "hashicorp/helm"
       version = ">= 2.15.0"
+    }
+
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 3.2.2"
     }
 
     kubectl = {
@@ -64,14 +64,16 @@ module "k3s" {
 
   count = contains(local.modules, "k3s") ? 1 : 0
 
-  vm_server_base_image  = var.vm_server_base_image
-  vm_agent_base_image   = var.vm_agent_base_image
-  vm_server_name        = var.vm_server_name
-  vm_agent_name         = var.vm_agent_name
+  vm_server_base_image    = var.vm_server_base_image
+  vm_agent_base_image     = var.vm_agent_base_image
+  vm_server_name          = var.vm_server_name
+  vm_agent_name           = var.vm_agent_name
 
-  do_ssh_key_name       = var.do_ssh_key_name
-  do_region             = var.do_region
-  do_size               = var.do_size
+  do_ssh_key_name         = var.do_ssh_key_name
+  do_region               = var.do_region
+  do_size                 = var.do_size
+
+  k3s_server_token_file   = var.k3s_server_token_file
 }
 
 module "istio-cert-manager-module" {

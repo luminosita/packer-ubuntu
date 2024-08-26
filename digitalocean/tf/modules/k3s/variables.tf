@@ -26,6 +26,10 @@ variable "do_size" {
     type    = string
 }            
 
+variable "k3s_server_token_file" {
+    type    = string
+}            
+
 variable "pvt_key" {
     type = string
     default = "~/.ssh/id_rsa"

@@ -37,6 +37,11 @@ variable "do_size" {
     default = "s-2vcpu-4gb"
 }            
 
+variable "k3s_server_token_file" {
+    type    = string
+    default = "../../k3s-server.token"
+}            
+
 variable "ingress_domain" {
   type = string
   default = "k3s.local"

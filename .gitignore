@@ -20,7 +20,7 @@ k3s.token
 digitalocean/hcl/vars.auto.pkrvars.hcl
 qemu/hcl/vars.auto.pkrvars.hcl
 k3s-server.token
-terraform/.terraform.lock.hcl
-terraform/.terraform
-terraform/terraform.tfstate.d
-terraform/k3s.tfplan
+digitalocean/tf/.terraform.lock.hcl
+digitalocean/tf/.terraform
+digitalocean/tf/terraform.tfstate.d
+digitalocean/tf/k3s.tfplan

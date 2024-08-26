@@ -18,7 +18,7 @@ build {
 
     #Upload Netplan configuration to image from host
     // provisioner "file" {
-    //     content = templatefile("../../files/netplan.tpl", {
+    //     content = templatefile("../templates/netplan.tpl", {
     //         MAC_ADDR = "${var.vm_mac_addr}",
     //     })
     //     destination = "/tmp/50-cloud-init.yaml"

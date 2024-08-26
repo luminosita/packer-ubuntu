@@ -23,10 +23,10 @@ build {
     sources = ["source.digitalocean.snapshot"]
 //    sources = ["source.null.ssh"]
 
-    provisioner "file" {
-        source          = "digitalocean/scripts/timer.sh"
-        destination     = "timer.sh"
-    }
+    // provisioner "file" {
+    //     source          = "digitalocean/scripts/timer.sh"
+    //     destination     = "timer.sh"
+    // }
 
     provisioner "shell" {
         env = "${var.script_env}"
@@ -36,7 +36,7 @@ build {
 
     provisioner "file" {
         source          = "/tmp/server-token"
-        destination     = "k3s-server.token"
+        destination     = "/tmp/k3s-server.token"
         direction       = "download"
     }
 }

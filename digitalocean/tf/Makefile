@@ -14,7 +14,7 @@
 
 DO_TF_FOLDER:=./terraform/
 
-include ../common.mk
+include common.mk
 
 init-tf-do:
 	$(info TERRAFORM: Init Terraform plugins for $(TF_WORKSPACE))
