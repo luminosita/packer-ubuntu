@@ -55,7 +55,7 @@ resource "digitalocean_droplet" "k3s-agent" {
 
     provisioner "file" {
         content = templatefile("templates/k3s-env.tpl", {
-            "K3S_TOKEN" = strip(data.local_file.k3s_token.content),
+            "K3S_TOKEN" = trimspace(data.local_file.k3s_token.content),
             "K3S_IP" = digitalocean_droplet.k3s-server.ipv4_address_private,
         }) 
         

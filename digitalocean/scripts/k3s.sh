@@ -29,7 +29,7 @@ fi
 if [ -f /etc/rancher/k3s/k3s.yaml ]; then
     echo "==> Prepare K3s kubectl"
     mkdir -p ~/.kube
-    cp -n /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 
     echo "==> K3s kubectl config"
     cat ~/.kube/config

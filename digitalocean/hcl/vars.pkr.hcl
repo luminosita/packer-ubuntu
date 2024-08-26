@@ -14,7 +14,7 @@ variable "vm_name" {
 
 variable "vm_version" {
     type    = string
-    default = ""
+    default = env("VM_VERSION")
 }
 
 variable "do_region" {
@@ -36,6 +36,6 @@ variable "scripts" {
 }            
 
 locals {
-    vm_snapshot_name = "${var.vm_name}-${var.vm_version}"
     vm_version = var.vm_version == "" ? formatdate("YYYY_DD_MM, hh:mm", timestamp()) : var.vm_version
+    vm_snapshot_name = "${var.vm_name}-${local.vm_version}"
 }

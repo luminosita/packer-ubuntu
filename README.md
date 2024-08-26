@@ -61,14 +61,20 @@ $ make apply-k3s-do
 $ make hcl-init-qemu
 ```
 
+Prepare envirnment
+
+```bash
+$ make hcl-prepare-qemu
+```
+
 #### Create QEMU Control Node K3s Server Snapshot
 ```bash
-make hcl-k3s-server-qemu
+$ make hcl-k3s-server-qemu
 ```
 
 #### Create QEMU K3s Agent Snapshot
 ```bash
-make hcl-k3s-agent-qemu
+$ make hcl-k3s-agent-qemu
 ```
 
 ### Deploy KVM, QEMU and Cockpit on VM Server
@@ -132,19 +138,25 @@ $ ssh ubuntu@127.0.0.1 -p 60022
 +++++++++++++++
 
 Bug: NON-ROOT USER DigitalOcean
+Bug: Packer Snapshot is registered as server node
+
 
 Terraform:
 Тest k3s cluster with three nodes
-K3S node tokens for agents
-LOCAL IPS for agent join
+Verify CLUSTER-CIDR
 
-Start cockpit as non-root
-Start qemu as non-root
-Checksum?
+Start cockpit as non-root on Linux
+Start qemu as non-root on Linux
+
+Checksum for snapshots?
 
 Change passwd ubuntu user
 Qemu Builder not resizing image
 HCP Packer for metadata
 
+Packer to create all server and agent images and set proper config files
+Use Terraform scripts for Packer server/agent final images
 Review QEMU images
 Finalize README.md
+
+Automate /tmp/k3s-server.token copy to ./

@@ -67,7 +67,9 @@ hcl-noble-k3s-istio-qemu-arm: validate-arm
 
 hcl-k3s-server-do-snapshot: validate-do
 	$(info PACKER: Build K3S Server snapshost image (Digital Ocean))
-	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_HCL_FOLDER}
+	packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.digitalocean.snapshot ${DO_HCL_FOLDER} && \
+	cp /tmp/k3s-server.token .
+	
 	# packer build -var-file=${DO_K3S_SERVER_VARS_FILE} -only=k3s.null.ssh ${DO_HCL_FOLDER}
 
 hcl-k3s-agent-do-snapshot: validate-do
@@ -118,7 +120,7 @@ download-noble-cloud-arm:
 	mkdir -p ${REPO_ROOT}/ubuntu-noble/24.04
 	curl -L https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img -o ${REPO_ROOT}/ubuntu-noble/24.04/ubuntu-noble-24.04.img
 
-# generate-k3s-token:
+generate-k3s-token:
 # 	$(info K3S: Generate K3S TOKEN)
 # 	$(info OLD K3S TOKEN: ${K3S_TOKEN_VAR})
 
