@@ -192,26 +192,3 @@ Run `kubectl` and retrieve cluster node list
 ```bash 
 $ kubectl get nodes
 ```
-
-+++++++++++++++
-
-Terraform:
-Verify CLUSTER-CIDR
-
-Proxmox OS install
-Proxmox provider for local server VMs
-
-Start cockpit as non-root on Linux
-Start qemu as non-root on Linux
-
-Checksum for snapshots?
-
-Qemu Builder not resizing image
-
-Packer to create all server and agent images and set proper config files
-Use Terraform scripts for Packer server/agent final images
-Review QEMU images
-
-HCP Packer for metadata
-Finalize README.md
-
