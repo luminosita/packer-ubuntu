@@ -3,6 +3,10 @@
 
 ## Proxmox
 - CT Template?
+- LXC Containers
+- Packer template
+- Packer VM clone
+- Packer LXC container
 
 ## Packer
 - HCP Packer for metadata

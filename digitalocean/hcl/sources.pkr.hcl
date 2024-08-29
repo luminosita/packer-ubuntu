@@ -9,7 +9,7 @@ source "digitalocean" "snapshot" {
     ssh_private_key_file    = "${var.ssh_private_key_file}"
     
     snapshot_name           = "${local.vm_snapshot_name}"
-    user_data               = templatefile("../templates/cloud-config.tpl", {
+    user_data               = templatefile("../common/templates/cloud-config.tpl", {
         "SSH_USERNAME"      = "${var.ssh_username}"
         "SSH_PUBLIC_KEY"    = file("${var.ssh_public_key_file}")
     })

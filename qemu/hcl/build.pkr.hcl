@@ -18,7 +18,7 @@ build {
 
     #Upload Netplan configuration to image from host
     // provisioner "file" {
-    //     content = templatefile("../templates/netplan.tpl", {
+    //     content = templatefile("../common/templates/netplan.tpl", {
     //         MAC_ADDR = "${var.vm_mac_addr}",
     //     })
     //     destination = "/tmp/50-cloud-init.yaml"
@@ -27,7 +27,7 @@ build {
 
     #Prepare image logs for download
     provisioner "shell" {
-        scripts = [ "scripts/cloud-init.sh" ]
+        scripts = [ "../common/scripts/cloud-init.sh" ]
     }
 
     #Create local (host) logs folder
@@ -46,9 +46,9 @@ build {
 
     provisioner "shell" {
         scripts = [
-#            "scripts/network.sh",
-            "scripts/sshd.sh",  
-            "scripts/cleanup.sh"
+#            "../common/scripts/network.sh",
+            "../common/scripts/sshd.sh",  
+            "../common/scripts/cleanup.sh"
         ]
     }
     # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
@@ -71,7 +71,7 @@ build {
     sources = [ "source.qemu.base" ]
 
     provisioner "shell" {
-        scripts = [ "scripts/python.sh" ]
+        scripts = [ "../common/scripts/python.sh" ]
     }
     provisioner "ansible" {
         playbook_file = "ansible/playbook.yaml"

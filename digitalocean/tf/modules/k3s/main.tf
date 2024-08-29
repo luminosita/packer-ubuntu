@@ -31,7 +31,7 @@ data "digitalocean_ssh_key" "gianni" {
 }
 
 data "external" "k3s-init-info" {
-  program = ["/bin/bash", "../scripts/k3s-init-info.sh"]
+  program = ["/bin/bash", "../common/scripts/k3s-init-info.sh"]
   query = {
     username            = var.ssh_username,
     ip_address          = digitalocean_droplet.k3s_server.ipv4_address,
@@ -57,8 +57,8 @@ resource "digitalocean_droplet" "k3s_server" {
 
     provisioner "remote-exec" {
         scripts = [
-            "../scripts/k3s.sh",
-            "../scripts/istio.sh",
+            "../common/scripts/k3s.sh",
+            "../common/scripts/istio.sh",
         ]
     }
 }
@@ -82,7 +82,7 @@ resource "digitalocean_droplet" "k3s_agent" {
     }
 
     provisioner "file" {
-        content = templatefile("../templates/k3s-env.tpl", {
+        content = templatefile("../common/templates/k3s-env.tpl", {
             "K3S_TOKEN" = trimspace(data.external.k3s-init-info.result.token),
             "K3S_IP" = digitalocean_droplet.k3s_server.ipv4_address_private,
         }) 
@@ -92,7 +92,7 @@ resource "digitalocean_droplet" "k3s_agent" {
 
     provisioner "remote-exec" {
         scripts = [
-            "../scripts/k3s-agent-start.sh",
+            "../common/scripts/k3s-agent-start.sh",
         ]
     }
 }

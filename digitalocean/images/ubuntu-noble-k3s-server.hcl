@@ -14,9 +14,9 @@ script_env = {
 }
 
 scripts = [
-    "scripts/init.sh",
-    "scripts/k3s.sh",
-    "scripts/istio.sh",
+    "../common/scripts/init.sh",
+    "../common/scripts/k3s.sh",
+    "../common/scripts/istio.sh",
 ]
 
 

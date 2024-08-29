@@ -15,6 +15,6 @@ script_env = {
 }
 
 scripts = [
-    "scripts/init.sh",
-    "scripts/k3s.sh"
+    "../common/scripts/init.sh",
+    "../common/scripts/k3s.sh"
 ]
