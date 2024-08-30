@@ -1,6 +1,8 @@
 ## Prepare Installer Machine
 ### Install Vault, Packer and Terraform
 
+#### MacOS
+
 ```bash
 $ brew tap hashicorp/tap
 $ brew install hashicorp/tap/hcp
@@ -12,6 +14,32 @@ Install JSON parser CLI
 $ brew install jq
 ```
 
+#### Ubuntu
+
+Install the required packages.
+
+```bash
+$ sudo apt-get update && \
+  sudo apt-get install wget gpg coreutils
+```
+Add the HashiCorp GPG key.
+
+```bash
+$ wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+```
+
+Add the official HashiCorp Linux repository.
+
+```bash
+$ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+```
+
+Update and install.
+
+```bash
+$ sudo apt-get update && sudo apt-get install hcp
+```
+
 ### Initialize HCP Vault CLI
 
 Login to Vault
@@ -21,6 +49,15 @@ The default web browser has been opened at https://auth.idp.hashicorp.com/oauth2
 Success!
 Successfully logged in!
 
+```
+
+On Ubuntu, using service principal credentials, 
+
+```bash
+$ hcp auth login --client-id=XXX --client-secret=YYY
+```
+
+```bash
 $ hcp profile init --vault-secrets
   ✓ Organization with name "hashicorp-edu-org" and ID "12cd56-88d2-69fb-8cc1-s3sAm3st" selected
   ✓ Project with name "ProductionProject" and ID "12cd56-704c-46af-8ba5-mAtr3x" selected
@@ -30,6 +67,7 @@ $ hcp vault-secrets secrets list
 Name      Latest Version  Created At
 username  2               2023-05-24T12:22:18.395Z
 ```
+
 ## Digital Ocean
 
 Change to `digitalocean` folder

@@ -1,5 +1,5 @@
-proxmox_url         = "https://proxmox.lan:8006/api2/json"
-proxmox_api_host    = "proxmox.lan"
+proxmox_url         = "https://proxmox.wan:8006/api2/json"
+proxmox_api_host    = "proxmox.wan"
 proxmox_node        = "proxmox"
 
 vm_template_name        = "test"

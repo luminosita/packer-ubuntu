@@ -7,7 +7,7 @@ vm_clone_id          = 8010
 
 vm_pool                     = "templates"
 
-ssh_host             = "vm1.wan"
+// ssh_host             = "vm1.wan"
 ssh_username         = "k3s"
 ssh_public_key_file     = "~/.ssh/id_rsa.pub"
 ssh_private_key_file    = "~/.ssh/id_rsa"
@@ -27,7 +27,7 @@ cpu_type            = "host"
 vm_cores  = "1"
 vm_memory = "1024"
 
-vm_net_mac_address   = "BC:24:11:41:C6:A6"
+vm_net_mac_address   = "BC:24:11:31:21:D8"
 
 script_env = {
     "K3S_KUBECONFIG_MODE" = "644",
