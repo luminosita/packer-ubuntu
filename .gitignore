@@ -24,3 +24,7 @@ digitalocean/tf/.terraform.lock.hcl
 digitalocean/tf/.terraform
 digitalocean/tf/terraform.tfstate.d
 digitalocean/tf/k3s.tfplan
+proxmox/tf/.terraform.lock.hcl
+proxmox/tf/.terraform
+proxmox/tf/terraform.tfstate.d
+proxmox/tf/k3s.tfplan
