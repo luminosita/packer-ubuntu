@@ -85,10 +85,10 @@ install-k3s:
 	$(info k3sup: Installing ...)
 
 	sudo chmod a+x k3s/install.sh && \
-		$(shell k3s/install.sh)
+		k3s/install.sh
 
 uninstall-k3s:
 	$(info k3sup: Uninstalling ...)
 
 	sudo chmod a+x k3s/uninstall.sh && \
-		$(shell k3s/uninstall.sh)
+		k3s/uninstall.sh
