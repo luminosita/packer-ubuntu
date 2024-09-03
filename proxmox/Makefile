@@ -83,13 +83,13 @@ plan-destroy-k3s:
 
 #k3sup
 install-k3s:
-$(info k3sup: Installing ...)
+	$(info k3sup: Installing ...)
 
-cd ${K3S_FOLDER} && \
-	source install.sh
+	cd ${K3S_FOLDER} && \
+		source install.sh
 
 uninstall-k3s:
-$(info k3sup: Uninstalling ...)
+	$(info k3sup: Uninstalling ...)
 
-cd ${K3S_FOLDER} && \
-	source uninstall.sh
+	cd ${K3S_FOLDER} && \
+		source uninstall.sh
