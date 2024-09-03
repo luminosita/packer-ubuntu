@@ -17,7 +17,7 @@ fi
 MASTER_IP=${IP_ADDRESSES[0]}  
 echo "Installing master node: $MASTER_IP"  
 k3sup install --ip $MASTER_IP --user $USER --k3s-channel $K3S_VERSION \
-    --k3s-extra-args '--write-kubeconfig-mode 644 --write-kubeconfig ~/.kube/config --flannel-backend=none --cluster-cidr=\'10.100.0.0/16\' --disable traefik --disable metrics-server --disable local-storage --disable-network-policy' \
+    --k3s-extra-args '--write-kubeconfig-mode 644 --write-kubeconfig ~/.kube/config --flannel-backend=none --cluster-cidr=10.100.0.0/16 --disable traefik --disable metrics-server --disable local-storage --disable-network-policy' \
     --local-path /tmp/config  
   
 # Install the other agent nodes  
