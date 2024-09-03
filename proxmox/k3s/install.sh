@@ -3,7 +3,7 @@
 # Read the list of IP addresses from the environment variable  
 IP_ADDRESSES=($HOSTS)  
 # Define the k3s version  
-K3S_VERSION="v1.24"  
+K3S_VERSION="v1.30"  
 
 USER="ubuntu"
   
