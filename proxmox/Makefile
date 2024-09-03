@@ -84,11 +84,11 @@ plan-destroy-k3s:
 install-k3s:
 	$(info k3sup: Installing ...)
 
-	chmod a+x k3s/install.sh
-	$(shell k3s/install.sh)
+	sudo chmod a+x k3s/install.sh && \
+		$(shell k3s/install.sh)
 
 uninstall-k3s:
 	$(info k3sup: Uninstalling ...)
 
-	chmod a+x k3s/uninstall.sh
-	$(shell k3s/uninstall.sh)
+	sudo chmod a+x k3s/uninstall.sh && \
+		$(shell k3s/uninstall.sh)
