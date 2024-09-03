@@ -7,7 +7,7 @@ IP_ADDRESSES=($HOSTS)
 # Check if there is at least one IP address  
 if [ ${#IP_ADDRESSES[@]} -eq 0 ]; then  
     echo "No IP addresses found. Please ensure the HOSTS environment variable is correctly set."  
-    exit 1  
+    return 
 fi  
 # Clean up the master node  
 MASTER_IP=${IP_ADDRESSES[0]}  

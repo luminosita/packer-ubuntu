@@ -86,10 +86,10 @@ install-k3s:
 	$(info k3sup: Installing ...)
 
 	cd ${K3S_FOLDER} && \
-		source install.sh
+		$(shell install.sh)
 
 uninstall-k3s:
 	$(info k3sup: Uninstalling ...)
 
 	cd ${K3S_FOLDER} && \
-		source uninstall.sh
+		$(shell uninstall.sh)
