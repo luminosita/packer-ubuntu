@@ -11,8 +11,6 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #  limitations under the License.
-SHELL := /bin/bash
-
 K3S_SERVER_VARS_FILE:=./images/ubuntu-noble-k3s-server.hcl
 K3S_AGENT_VARS_FILE:=./images/ubuntu-noble-k3s-agent.hcl
 
@@ -86,9 +84,11 @@ plan-destroy-k3s:
 install-k3s:
 	$(info k3sup: Installing ...)
 
-	$(shell source k3s/install.sh)
+	chmod a+x k3s/install.sh
+	$(shell k3s/install.sh)
 
 uninstall-k3s:
 	$(info k3sup: Uninstalling ...)
 
-	$(shell source k3s/uninstall.sh)
+	chmod a+x k3s/uninstall.sh
+	$(shell k3s/uninstall.sh)
