@@ -84,7 +84,7 @@ module "k3s" {
 }
 
 module "istio-cert-manager-module" {
-    source = "./modules/istio-cert-manager"
+    source = "../../common/tf/modules/istio-cert-manager"
 
     count = contains(local.modules, "istio-cert-manager") ? 1 : 0
 
@@ -93,7 +93,7 @@ module "istio-cert-manager-module" {
 }
 
 module "istio-bookinfo-module" {
-    source = "./modules/istio-bookinfo"
+    source = "../../common/tf/modules/istio-bookinfo"
 
     count = contains(local.modules, "istio-bookinfo") ? 1 : 0
 
@@ -103,7 +103,7 @@ module "istio-bookinfo-module" {
 }
 
 module "istio-addons-module" {
-    source = "./modules/istio-addons"
+    source = "../../common/tf/modules/istio-addons"
 
     count = contains(local.modules, "istio-addons") ? 1 : 0
 
@@ -113,7 +113,7 @@ module "istio-addons-module" {
 }
 
 module "k8s-dashboard" {
-    source = "./modules/k8s-dashboard"
+    source = "../../common/tf/modules/k8s-dashboard"
 
     count = contains(local.modules, "k8s-dashboard") ? 1 : 0
 

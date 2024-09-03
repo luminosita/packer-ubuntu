@@ -7,13 +7,14 @@ vm_clone_id          = 8010
 
 vm_pool                     = "templates"
 
-// ssh_host             = "vm1.wan"
-ssh_username         = "k3s"
-ssh_public_key_file     = "~/.ssh/id_rsa.pub"
+ssh_username            = "ubuntu"
 ssh_private_key_file    = "~/.ssh/id_rsa"
 
+ssh_bastion_username            = "proxmox"
+ssh_bastion_private_key_file    = "~/.ssh/id_rsa"
+
 ### VM disk configuration
-vm_disk_storage_pool = "local-zfs1"
+vm_disk_storage_pool = "local-zfs"
 vm_disk_type         = "virtio"
 vm_scsi_controller   = "virtio-scsi-single"
 vm_guest_disk_drive  = "/dev/vda"

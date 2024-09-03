@@ -20,6 +20,7 @@ TF_PLAN:=./k3s.tfplan
 
 HCL_FOLDER:=./hcl/
 TF_FOLDER:=./tf/
+K3S_FOLDER:=./k3s/
 
 include common.mk
 
@@ -78,3 +79,17 @@ plan-destroy-k3s:
 	cd ${TF_FOLDER} && \
 	terraform workspace select $(TF_WORKSPACE) && \
     terraform plan -destroy -var-file=${TF_VARS} -out=${TF_PLAN}
+
+
+#k3sup
+install-k3s:
+$(info k3sup: Installing ...)
+
+cd ${K3S_FOLDER} && \
+	source install.sh
+
+uninstall-k3s:
+$(info k3sup: Uninstalling ...)
+
+cd ${K3S_FOLDER} && \
+	source uninstall.sh

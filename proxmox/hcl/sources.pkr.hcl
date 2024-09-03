@@ -26,6 +26,10 @@ source "proxmox-clone" "template" {
     ssh_username            = "${var.ssh_username}"
     ssh_private_key_file    = "${var.ssh_private_key_file}"
 
+    ssh_bastion_host                = "${var.ssh_bastion_host}"
+    ssh_bastion_username            = "${var.ssh_bastion_username}"
+    ssh_bastion_private_key_file    = "${var.ssh_bastion_private_key_file}"
+
     task_timeout = "5m"
     ssh_timeout = "10m"
 

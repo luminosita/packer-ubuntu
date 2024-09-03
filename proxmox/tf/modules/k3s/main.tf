@@ -110,10 +110,15 @@ resource "proxmox_lxc" "k3s_agent" {
 #     count = 1
 
 #     connection {
-#         host = proxmox_lxc.k3s_server.vmid]
+#         host = proxmox_lxc.k3s_server.vmid
 #         user = var.ssh_username
 #         type = "ssh"
 #         private_key = file(var.ssh_private_key_file)
+        
+#         bastion_host = var.ssh_bastion_host
+#         bastion_user = var.ssh_bastion_username
+#         bastion_private_key = var.ssh_bastion_private_key_file
+
 #         timeout = "2m"  
 #     }
 

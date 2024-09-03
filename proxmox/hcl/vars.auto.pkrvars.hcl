@@ -1,6 +1,7 @@
 proxmox_url         = "https://proxmox.wan:8006/api2/json"
 proxmox_api_host    = "proxmox.wan"
 proxmox_node        = "proxmox"
+proxmox_token       = "123"
 
 vm_template_name        = "test"
 vm_template_description = "Test Description"

@@ -15,7 +15,7 @@ variable "proxmox_api_user" {
 
 variable "proxmox_token_id" {
   type = string
-  default = "packer-build"
+  default = "terraform"
 }
 
 variable "proxmox_token" {
@@ -33,17 +33,27 @@ variable "proxmox_api_host" {
 
 ######################## SSH definitions ####################################
 
-variable "ssh_host" {
-  type = string
-  default = ""
-}
-
 variable "ssh_username" {
   type = string
 }
 
 variable "ssh_private_key_file" {
   type = string
+}
+
+variable "ssh_bastion_host" {
+  type = string
+  default = ""
+}
+
+variable "ssh_bastion_username" {
+  type = string
+  default = ""
+}
+
+variable "ssh_bastion_private_key_file" {
+  type = string
+  default = ""
 }
 
 ######################## VM definitions ####################################
