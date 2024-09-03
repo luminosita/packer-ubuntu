@@ -1,6 +1,6 @@
 #!/bin/bash  
 
-USER="ubuntu"  
+USER="k3s"  
 
 # Read the list of IP addresses from the environment variable  
 IP_ADDRESSES=($HOSTS)  

@@ -5,7 +5,7 @@ IP_ADDRESSES=($HOSTS)
 # Define the k3s version  
 K3S_VERSION="v1.30"  
 
-USER="ubuntu"
+USER="k3s"
   
 # Check if there is at least one IP address  
 if [ ${#IP_ADDRESSES[@]} -eq 0 ]; then  
