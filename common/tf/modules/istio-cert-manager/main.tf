@@ -1,40 +1,89 @@
 terraform {
   required_providers {
-    kubectl = {
-      source = "gavinbunney/kubectl"
+    kubernetes = {
+        source  = "hashicorp/kubernetes"
+        version = ">= 2.32.0"
     }
   }
 }
 
-locals {
-  local_path = "${path.module}/resources/"
+resource "kubernetes_manifest" "cert_manager_clusterissuer" {
+    manifest = {
+        "apiVersion" = "cert-manager.io/v1"
+        "kind"       = "ClusterIssuer"
+        "metadata" = {
+            "name"      = "selfsigned-issuer"
+            "namespace" = "default"
+        }
+        "spec" = {
+            "selfSigned" = {}
+        }
+    }  
+}  
 
-  docs = module.utils_yaml_document_parser.parser_file_docs
+resource "kubernetes_manifest" "cert_manager_certificate" {
+    manifest = {
+        "apiVersion" = "cert-manager.io/v1"
+        "kind" = "Certificate"
+        "metadata" = {
+            "name" = "my-selfsigned-ca"
+        }
+
+        "spec" = {
+            "isCA" = true
+            "commonName" = "my-selfsigned-ca"
+            "secretName" = "root-secret"
+            "privateKey" = {
+                "algorithm" = "ECDSA"
+                "size" = 256
+            }
+            "issuerRef" = {
+                "name" = "selfsigned-issuer"
+                "kind" = "ClusterIssuer"
+                "group" = "cert-manager.io"
+            }
+        }
+    }
 }
 
-module "utils_yaml_document_parser" {
-  source = "../../utils/yaml_document_parser"
-
-  parser_file_names = [ "istio-cert-issuer.yaml" ]
-
-  parser_file_path = "${local.local_path}"
+resource "kubernetes_manifest" "cert_manager_certificate" {
+    manifest = {
+        "apiVersion" = "cert-manager.io/v1"
+        "kind" = "Issuer"
+        "metadata" = {
+            "name" = "my-ca-issuer"
+        }
+        "spec" = {
+            "ca" = {
+                "secretName" = "root-secret"
+            }
+        }
+    }
 }
 
-resource "kubectl_manifest" "cert_manager_clusterissuer" {
-  yaml_body = <<YAML
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: selfsigned-issuer
-spec:
-  selfSigned: {}
-  YAML
+resource "kubernetes_manifest" "cert_manager_certificate" {
+    manifest = {
+        "apiVersion" = "cert-manager.io/v1"
+        "kind" = "Certificate"
+        "metadata" = {
+            "name" = "telemetry-gw-cert"
+        }
+        "spec" = {
+            "commonName" = "telemetry-gw-cert"
+            "secretName" = "telemetry-gw-secret"
+            "privateKey" = {
+                "algorithm" = "ECDSA"
+                "size" = "256"
+            }
+            "issuerRef" = {
+                "name" = "my-ca-issuer"
+                "kind" = "Issuer"
+                "group" = "cert-manager.io"
+            }
+            "dnsNames" = [
+                "${INGRESS_DOMAIN}",
+                "*.${INGRESS_DOMAIN}"
+            ]
+        }
+    }
 }
-
-resource "kubectl_manifest" "istio_cert_manager_resources" {
-  for_each           = { for doc in local.docs : doc.docId => doc.content }
-
-  yaml_body          = replace(each.value, "${"$"}{INGRESS_DOMAIN}", "${var.ingress_domain}")
-  override_namespace = var.istio_namespace
-}
-

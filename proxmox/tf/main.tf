@@ -95,6 +95,18 @@ module "calico" {
     count = contains(local.modules, "calico") ? 1 : 0
 }
 
+module "istio" {
+    source = "../../common/tf/modules/istio"
+
+    count = contains(local.modules, "istio") ? 1 : 0
+}
+
+module "cert-manager" {
+    source = "../../common/tf/modules/cert-manager"
+
+    count = contains(local.modules, "certmgr") ? 1 : 0
+}
+
 module "istio-cert-manager-module" {
     source = "../../common/tf/modules/istio-cert-manager"
 
