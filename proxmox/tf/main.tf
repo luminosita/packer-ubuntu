@@ -55,13 +55,19 @@ output "modules" {
     value = local.modules
 }
 
-# provider "kubernetes" {
-#   config_path    = "~/.kube/config"
-#   config_context = "default"
-# }
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+  config_context = "default"
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
 
 provider "proxmox" {
-    pm_api_url        = var.api_url
+    pm_api_url            = var.api_url
     pm_api_token_id       = var.api_token_id
     pm_api_token_secret   = var.api_token_secret
 }
@@ -81,6 +87,12 @@ module "k3s" {
 
     ssh_username            = var.ssh_username
     ssh_private_key_file    = var.ssh_private_key_file
+}
+
+module "calico" {
+    source = "../../common/tf/modules/calico"
+
+    count = contains(local.modules, "calico") ? 1 : 0
 }
 
 module "istio-cert-manager-module" {

@@ -3,9 +3,9 @@ api_url                 = "https://proxmox.wan:8006/api2/json"
 ssh_username            = "ubuntu"
 ssh_private_key_file    = "~/.ssh/id_rsa"
 
-ssh_bastion_host                = "proxmox.wan"
-ssh_bastion_username            = "ubuntu"
-ssh_bastion_private_key_file    = "~/.ssh/id_rsa"
+# ssh_bastion_host                = "proxmox.wan"
+# ssh_bastion_username            = "ubuntu"
+# ssh_bastion_private_key_file    = "~/.ssh/id_rsa"
 
 vm_server_name          = "k3s-server-ubuntu-noble"
 vm_agent_name           = "k3s-agent-ubuntu-noble"
