@@ -44,7 +44,7 @@ variable "ssh_private_key_file" {
 
 variable "ingress_domain" {
   type = string
-  default = "k3s.local"
+  default = "k3s.lan"
 }
 
 variable "module" {

@@ -13,7 +13,6 @@ resource "kubernetes_manifest" "cert_manager_clusterissuer" {
         "kind"       = "ClusterIssuer"
         "metadata" = {
             "name"      = "selfsigned-issuer"
-            "namespace" = "default"
         }
         "spec" = {
             "selfSigned" = {}
@@ -27,6 +26,7 @@ resource "kubernetes_manifest" "cert_manager_certificate" {
         "kind" = "Certificate"
         "metadata" = {
             "name" = "my-selfsigned-ca"
+            "namespace" = "${var.istio_namespace}"
         }
 
         "spec" = {
@@ -46,12 +46,13 @@ resource "kubernetes_manifest" "cert_manager_certificate" {
     }
 }
 
-resource "kubernetes_manifest" "cert_manager_certificate" {
+resource "kubernetes_manifest" "cert_manager_ca_issuer" {
     manifest = {
         "apiVersion" = "cert-manager.io/v1"
         "kind" = "Issuer"
         "metadata" = {
             "name" = "my-ca-issuer"
+            "namespace" = "${var.istio_namespace}"
         }
         "spec" = {
             "ca" = {
@@ -61,12 +62,13 @@ resource "kubernetes_manifest" "cert_manager_certificate" {
     }
 }
 
-resource "kubernetes_manifest" "cert_manager_certificate" {
+resource "kubernetes_manifest" "cert_manager_gw_certificate" {
     manifest = {
         "apiVersion" = "cert-manager.io/v1"
         "kind" = "Certificate"
         "metadata" = {
             "name" = "telemetry-gw-cert"
+            "namespace" = "${var.istio_namespace}"
         }
         "spec" = {
             "commonName" = "telemetry-gw-cert"
@@ -81,8 +83,8 @@ resource "kubernetes_manifest" "cert_manager_certificate" {
                 "group" = "cert-manager.io"
             }
             "dnsNames" = [
-                "${INGRESS_DOMAIN}",
-                "*.${INGRESS_DOMAIN}"
+                "${var.ingress_domain}",
+                "*.${var.ingress_domain}"
             ]
         }
     }

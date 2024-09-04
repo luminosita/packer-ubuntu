@@ -41,10 +41,6 @@ terraform {
 
 locals {
     istio_namespace = "istio-system"
-    istio_version   = "1.23"
-    istio_repo      = "https://raw.githubusercontent.com/istio/istio/release-"
-    dash_version    = "v7.5.0"
-    dash_repo       = "https://raw.githubusercontent.com/kubernetes/dashboard/"
 
     modules = [
       for moduleName in split(",", var.module) : trimspace(moduleName)
@@ -107,10 +103,10 @@ module "cert-manager" {
     count = contains(local.modules, "certmgr") ? 1 : 0
 }
 
-module "istio-cert-manager-module" {
-    source = "../../common/tf/modules/istio-cert-manager"
+module "certificates-module" {
+    source = "../../common/tf/modules/certificates"
 
-    count = contains(local.modules, "istio-cert-manager") ? 1 : 0
+    count = contains(local.modules, "certificates") ? 1 : 0
 
     istio_namespace = local.istio_namespace
     ingress_domain  = var.ingress_domain
@@ -121,8 +117,9 @@ module "istio-bookinfo-module" {
 
     count = contains(local.modules, "istio-bookinfo") ? 1 : 0
 
-    istio_version   = local.istio_version
-    istio_repo      = local.istio_repo
+    istio_version   = "1.23"
+    istio_repo      = "https://raw.githubusercontent.com/istio/istio/release-"
+
     istio_namespace = local.istio_namespace
 }
 
@@ -131,8 +128,9 @@ module "istio-addons-module" {
 
     count = contains(local.modules, "istio-addons") ? 1 : 0
 
-    istio_version  = local.istio_version
-    istio_repo     = local.istio_repo
+    istio_version   = "1.23"
+    istio_repo      = "https://raw.githubusercontent.com/istio/istio/release-"
+
     ingress_domain = var.ingress_domain
 }
 
@@ -141,7 +139,8 @@ module "k8s-dashboard" {
 
     count = contains(local.modules, "k8s-dashboard") ? 1 : 0
 
-    dash_version   = local.dash_version
-    dash_repo      = local.dash_repo
+    dash_version    = "v7.5.0"
+    dash_repo       = "https://raw.githubusercontent.com/kubernetes/dashboard/"
+
     ingress_domain = var.ingress_domain
 }
