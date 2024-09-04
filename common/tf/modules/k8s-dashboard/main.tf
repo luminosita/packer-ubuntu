@@ -89,7 +89,7 @@ resource "kubernetes_manifest" "kubernetes_dashboard_virtual_service" {
                 }]
                 "route" = [{
                     "destination" = {
-                        "host" = "kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local"
+                        "host" = "kubernetes-dashboard-kong-proxy.kubernetes-dashboard.svc.cluster.local"
                         "port" = {
                             "number" = "443"
                         }

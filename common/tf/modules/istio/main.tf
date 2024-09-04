@@ -18,10 +18,6 @@ resource "helm_release" "istio-base" {
 
   create_namespace  = true
   namespace         = "istio-system"
-
-  # values = [
-  #   "${file(local.valuesPath)}"
-  # ]
 }
 
 resource "helm_release" "istiod" {
@@ -32,8 +28,14 @@ resource "helm_release" "istiod" {
 
   create_namespace  = true
   namespace         = "istio-system"
+}
 
-  # values = [
-  #   "${file(local.valuesPath)}"
-  # ]
+resource "helm_release" "gateway" {
+  name        = "istio-ingressgateway"
+  repository  = "https://istio-release.storage.googleapis.com/charts"
+  chart       = "gateway"
+  version     = "1.23.0"
+
+  create_namespace  = true
+  namespace         = "istio-system"
 }
