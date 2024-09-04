@@ -1,37 +1,31 @@
 terraform {
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
+    required_providers {
+        helm = {
+            source  = "hashicorp/helm"
+        }
+        kubernetes = {
+            source  = "hashicorp/kubernetes"
+        }
     }
-    kubectl = {
-      source = "gavinbunney/kubectl"
-    }
-  }
 }
 
 locals {
   dash_namespace = "kubernetes-dashboard"
-  dash_path = "/aio/deploy/"
-  local_path = "${path.module}/resources/"
-
-  url_docs = module.utils_yaml_document_parser.parser_url_docs
-  file_docs = module.utils_yaml_document_parser.parser_file_docs
 }
 
-module "utils_yaml_document_parser" {
-  source = "../../utils/yaml_document_parser"
+resource "helm_release" "kubernetes-dashboard" {
+  name        = "kubernetes-dashboard"
+  repository  = "https://kubernetes.github.io/dashboard/"
+  chart       = "kubernetes-dashboard"
+  version     = "7.5.0"
 
-  parser_url_names = [
-    "recommended.yaml"
-  ]
+  create_namespace  = true
+  namespace         = local.dash_namespace
 
-  parser_file_names = [
-    "dashboard-gateway.yaml",
-    "dashboard-rbac.yaml"
-  ]
-
-  parser_url_path = "${var.dash_repo}${var.dash_version}${local.dash_path}"
-  parser_file_path = "${local.local_path}"
+  set {
+    name  = "crds.enabled"
+    value = "true"
+  }
 }
 
 resource "kubernetes_labels" "kubernetes_dashboard_namespace_istio_injection" {
@@ -39,7 +33,7 @@ resource "kubernetes_labels" "kubernetes_dashboard_namespace_istio_injection" {
   kind        = "Namespace"
 
   metadata {
-    name = "${local.dash_namespace}"
+    name = "${helm_release.kubernetes-dashboard.namespace}"
   }
 
   labels = {
@@ -47,16 +41,92 @@ resource "kubernetes_labels" "kubernetes_dashboard_namespace_istio_injection" {
   }
 }
 
-resource "kubectl_manifest" "dash_resources" {
-  for_each  = { for doc in local.url_docs : doc.docId => doc.content }
-
-  yaml_body = each.value
+resource "kubernetes_manifest" "kubernetes_dashboard_gateway" {
+    manifest = {
+        "apiVersion" = "networking.istio.io/v1beta1"
+        "kind" = "Gateway"
+        "metadata" = {
+            "name" = "dashboard-gateway"
+            "namespace" = "${helm_release.kubernetes-dashboard.namespace}"
+        }
+        "spec" = {
+            "selector" = {
+                "istio" = "ingressgateway" # use istio default ingress gateway
+            }
+            "servers" = [{
+                "port" = {
+                    "number" = "443"
+                    "name" = "https"
+                    "protocol" = "HTTPS"
+                }
+                "tls" = {
+                    "mode" = "PASSTHROUGH"
+                }
+                "hosts" = [
+                    "dashboard.${var.ingress_domain}"
+                ]
+            }]
+        }
+    }
 }
 
-resource "kubectl_manifest" "dash_gateway_resources" {
-  for_each  = { for doc in local.file_docs : doc.docId => doc.content }
-  yaml_body = replace(each.value, "${"$"}{INGRESS_DOMAIN}", "${var.ingress_domain}")
+resource "kubernetes_manifest" "kubernetes_dashboard_virtual_service" {
+    manifest = {
+        "apiVersion" = "networking.istio.io/v1beta1"
+        "kind" = "VirtualService"
+        "metadata" = {
+            "name" = "kubernetes-dashboard"
+            "namespace" = "${helm_release.kubernetes-dashboard.namespace}"
+        }
+        "spec" = {
+            "hosts" = ["dashboard.${var.ingress_domain}"]
+            "gateways" = ["dashboard-gateway"]
+//            "http" = {}
+            "tls" = [{
+                "match" = [{
+                    "port" = "443"
+                    "sniHosts" = ["dashboard.${var.ingress_domain}"]
+                }]
+                "route" = [{
+                    "destination" = {
+                        "host" = "kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local"
+                        "port" = {
+                            "number" = "443"
+                        }
+                    }
+                }]
+            }]
+        }
+    }
 }
 
+resource "kubernetes_manifest" "kubernetes_dashboard_service_account" {
+    manifest = {
+        "apiVersion" = "v1"
+        "kind" = "ServiceAccount"
+        "metadata" = {
+          "name" = "admin-user"
+          "namespace" = "${helm_release.kubernetes-dashboard.namespace}"
+        }
+    }
+}
 
-
+resource "kubernetes_manifest" "kubernetes_dashboard_cluster_role_binding" {
+    manifest = {
+        "apiVersion" = "rbac.authorization.k8s.io/v1"
+        "kind" = "ClusterRoleBinding"
+        "metadata" = {
+          "name" = "admin-user"
+        }
+        "roleRef" = {
+          "apiGroup" = "rbac.authorization.k8s.io"
+          "kind" = "ClusterRole"
+          "name" = "cluster-admin"
+        }
+        "subjects" = [{
+            "kind" = "ServiceAccount"
+            "name" = "admin-user"
+            "namespace" = "${helm_release.kubernetes-dashboard.namespace}"
+        }]
+    }
+}

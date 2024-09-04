@@ -139,8 +139,5 @@ module "k8s-dashboard" {
 
     count = contains(local.modules, "k8s-dashboard") ? 1 : 0
 
-    dash_version    = "v7.5.0"
-    dash_repo       = "https://raw.githubusercontent.com/kubernetes/dashboard/"
-
     ingress_domain = var.ingress_domain
 }
