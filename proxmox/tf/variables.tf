@@ -5,6 +5,7 @@ variable "proxmox" {
         endpoint  = string
         insecure  = bool
 
+        ssh_host                = string
         ssh_username            = string
         ssh_private_key_file    = string
         socks5_server           = string

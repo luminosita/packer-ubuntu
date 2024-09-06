@@ -79,7 +79,7 @@ module "k3s" {
     proxmox                 = var.proxmox
 
     vm_user                 = var.vm_user
-    ssh_public_key_file     = var.vm_ssh_public_key_file
+    vm_ssh_public_key_file     = var.vm_ssh_public_key_file
 
     cluster_cidr            = var.cluster_cidr
 }

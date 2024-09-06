@@ -5,6 +5,7 @@ variable "proxmox" {
         endpoint  = string
         insecure  = bool
 
+        ssh_host                = string
         ssh_username            = string
         ssh_private_key_file    = string
         socks5_server           = string
@@ -17,7 +18,7 @@ variable "vm_user" {
   type        = string
 }
 
-variable "ssh_public_key_file" {
+variable "vm_ssh_public_key_file" {
     type = string
 }
 
@@ -39,7 +40,7 @@ locals {
   EOT
 
   k3sup_server_args = <<-EOT
-  --user ${var.vm_user} --k3s-channel ${var.k3s_version} --k3s-extra-args ${locals.k3s_extra_args} 
+  --user ${var.vm_user} --k3s-channel ${var.k3s_version} --k3s-extra-args ${local.k3s_extra_args} 
    --local-path /tmp/config"  
   EOT
 
