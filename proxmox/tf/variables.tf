@@ -35,6 +35,11 @@ variable "vm_ssh_public_key_file" {
 }
 
 ###############################  K3s Settings ##############################
+variable "k3s_version" {
+  type = string
+  default = "v1.30"
+}
+
 variable "ingress_domain" {
   type = string
   default = "k3s.lan"

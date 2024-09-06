@@ -3,6 +3,9 @@ terraform {
         proxmox = {
             source  = "bpg/proxmox"
         }    
+        local = {
+            source  = "hashicorp/local"
+        }
     }
 }
 
@@ -24,40 +27,45 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_2404_generic_image"
 }
 	
 resource "proxmox_virtual_environment_file" "cloud-init-ctrl-01" {
-  node_name    = var.proxmox.node_name
-  content_type = "snippets"
-  datastore_id = "local"
+    node_name    = var.proxmox.node_name
+    content_type = "snippets"
+    datastore_id = "local"
 
-  source_raw {
-    data = templatefile("../cloud-init/k3s-common.yaml.tftpl", {
-        hostname    = "k3s-ctrl-01"
-        username    = var.vm_user
-        pub-key     = file(var.ssh_public_key_file)
-    })
-    
-    file_name = "cloud-init-k3s-ctrl-01.yaml"
-  }
+    source_raw {
+        data = templatefile("../cloud-init/k3s-control-plane.yaml.tftpl", {
+            common-config = templatefile("../cloud-init/k3s-common.yaml.tftpl", {
+                hostname      = "k3s-ctrl-01"
+                username      = var.vm_user
+                pub-key       = file(var.ssh_public_key_file)
+                cluster-cidr  = var.cluster_cidr
+            })
+        })
+
+        file_name = "cloud-init-k3s-ctrl-01.yaml"
+    }
 }
 
 resource "proxmox_virtual_environment_file" "cloud-init-work-01" {
-  count = 2
+    count = 2
 
-  node_name    = var.proxmox.node_name
-  content_type = "snippets"
-  datastore_id = "local"
+    node_name    = var.proxmox.node_name
+    content_type = "snippets"
+    datastore_id = "local"
 
-  source_raw {
-    data = templatefile("../cloud-init/k3s-common.yaml.tftpl", {
-        hostname    = "k3s-work-0${count.index+1}"
-        username    = var.vm_user
-        pub-key     = file(var.ssh_public_key_file)
-    })
-    
-    file_name = "cloud-init-k3s-work-0${count.index+1}.yaml"
-  }
+    source_raw {
+        data = templatefile("../cloud-init/k3s-worker.yaml.tftpl", {
+            common-config = templatefile("../cloud-init/k3s-common.yaml.tftpl", {
+            hostname    = "k3s-work-0${count.index+1}"
+            username    = var.vm_user
+            pub-key     = file(var.ssh_public_key_file)
+            })
+        })    
+        
+        file_name = "cloud-init-k3s-work-0${count.index+1}.yaml"
+    }
 }
 
-resource "proxmox_virtual_environment_vm" "k8s-ctrl-01" {
+resource "proxmox_virtual_environment_vm" "k3s-ctrl-01" {
 //  provider  = proxmox.euclid
   node_name = var.proxmox.node_name
 
@@ -127,7 +135,11 @@ resource "proxmox_virtual_environment_vm" "k8s-ctrl-01" {
   }
 }
 
-resource "proxmox_virtual_environment_vm" "k8s-work-01" {
+output "ctrl_01_ipv4_address" {
+    value      = proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]
+}
+
+resource "proxmox_virtual_environment_vm" "k3s-work-01" {
   count = 2
 //  provider  = proxmox.euclid
   node_name = var.proxmox.node_name
@@ -198,115 +210,17 @@ resource "proxmox_virtual_environment_vm" "k8s-work-01" {
   }
 }
 
-# data "external" "k3s-init-info" {
-#     program = ["/bin/bash", "../common/scripts/k3s-init-info.sh"]
-#     query = {
-#         username            = var.ssh_username,
-#         ip_address          = digitalocean_droplet.k3s_server.ipv4_address,
-#         private_key_file    = var.ssh_private_key_file
-#     }
-# }
+resource "null" "k3sup" {
+    provisioner "local-exec" {
+        command = "k3sup install --ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_server_args}"
+    }  
 
-# resource "proxmox_lxc" "k3s_server" {
-#     target_node     = var.prox_target_node
-#     hostname        = var.vm_server_name
-#     unprivileged    = true
+    provisioner "local-exec" {
+        command = "k3sup join --ip ${proxmox_virtual_environment_vm.k3s-work-01[0].ipv4_addresses[1][0]} --server-ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_agent_args}"
+    }
 
-#     clone           = var.prox_template_vmid
-#     clone_storage   = var.prox_storage
+    provisioner "local-exec" {
+        command = "k3sup join --ip ${proxmox_virtual_environment_vm.k3s-work-01[1].ipv4_addresses[1][0]} --server-ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_agent_args}"
+    }
+}
 
-#    pool            = var.prox_pool
-
-    # full            = true
-
-    # vmid            = 2000
-
-    # rootfs {
-    #     storage = "local-zfs"
-    #     size    = "20G"
-    # }
-
-    # network {
-    #     name   = "eth0"
-    #     bridge = "vmbr0"
-    #     ip     = "dhcp"
-    # }
-# }
-
-# resource "proxmox_lxc" "k3s_agent" {
-#     count = 2
-
-#     target_node     = var.prox_target_node
-#     hostname        = "${var.vm_agent_name}-${count.index+1}"
-#     unprivileged    = true
-
-#     clone           = var.prox_template_vmid
-#     clone_storage   = var.prox_storage
-
-# #    pool            = var.prox_pool
-
-#     full            = true
-
-#     vmid            = 2000 + count.index + 1
-
-#     rootfs {
-#         storage = "local-zfs"
-#         size    = "20G"
-#     }
-
-    # network {
-    #     name   = "eth0"
-    #     bridge = "vmbr0"
-    #     ip     = "dhcp"
-    # }
-
-    # connection {
-    #     host = self.
-    #     user = var.ssh_username
-    #     type = "ssh"
-    #     private_key = file(var.ssh_private_key_file)
-    #     timeout = "2m"  
-    # }
-
-    # provisioner "local-exec" {
-    #     command = "k3sup install --ip $MASTER_IP --user ${ssh_username} --k3s-channel v1.24  --local-path /tmp/config"
-    # }
-# }
-
-# resource "local_file" "test_file" {
-#     filename = "test.env"
-
-#     //content = data.external.k3s-init-info.result.token
-
-#     content = replace(replace(jsonencode(data.external.k3s-init-info.result), "\"", ""), ":", "=")
-# }
-
-# variable "ips" {
-#     type = list(string)
-#     default = ["167.99.129.234"]
-# }
-
-# resource "null_resource" "k3sup-server" {
-#     count = 1
-
-#     connection {
-#         host = proxmox_lxc.k3s_server.vmid
-#         user = var.ssh_username
-#         type = "ssh"
-#         private_key = file(var.ssh_private_key_file)
-        
-#         bastion_host = var.ssh_bastion_host
-#         bastion_user = var.ssh_bastion_username
-#         bastion_private_key = var.ssh_bastion_private_key_file
-
-#         timeout = "2m"  
-#     }
-
-#     provisioner "local-exec" {
-#         command = "laza"
-#         # inline = [
-#         #     # "systemctl enable k3s-agent",
-#         #     # "systemctl start k3s-agent",
-#         # ]
-#     }
-# }

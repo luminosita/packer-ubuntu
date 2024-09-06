@@ -80,6 +80,8 @@ module "k3s" {
 
     vm_user                 = var.vm_user
     ssh_public_key_file     = var.vm_ssh_public_key_file
+
+    cluster_cidr            = var.cluster_cidr
 }
 
 module "calico" {
