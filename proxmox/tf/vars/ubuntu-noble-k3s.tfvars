@@ -1,21 +1,20 @@
-api_url                 = "https://proxmox.wan:8006/api2/json"
-
-ssh_username            = "ubuntu"
-ssh_private_key_file    = "~/.ssh/id_rsa"
-
-# ssh_bastion_host                = "proxmox.wan"
-# ssh_bastion_username            = "ubuntu"
-# ssh_bastion_private_key_file    = "~/.ssh/id_rsa"
-
-vm_server_name          = "k3s-server-ubuntu-noble"
-vm_agent_name           = "k3s-agent-ubuntu-noble"
-
 api_token_id            = "root@pam!terraform"
 
-prox_target_node        = "proxmox"
-prox_storage            = "local-zfs"
-prox_template_vmid      = 8010
-prox_pool               = "k3s"
+proxmox = {
+    node_name = "proxmox"
+    endpoint  = "https://proxmox.wan:8006"
+    insecure  = true
+
+    ssh_username            = "root"
+    ssh_private_key_file    = "~/.ssh/id_rsa"
+    socks5_server           = "localhost:8002"
+}
+
+vm_user                     = "k3s"
+vm_ssh_public_key_file      = "~/.ssh/id_rsa.proxmox.pub"
+
+ingress_domain          = "k3s.emisia.net"
+cluster_cidr            = "10.100.0.0/16"
 
 
 

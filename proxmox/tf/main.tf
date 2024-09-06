@@ -27,21 +27,14 @@ terraform {
             version = ">= 3.2.2"
         }
 
-        kubectl = {
-            source  = "gavinbunney/kubectl"
-            version = ">= 1.14.0"
-        }
-
         proxmox = {
-            source = "Telmate/proxmox"
-            version = "3.0.1-rc3"
-        }
+            source  = "bpg/proxmox"
+            version = "0.63.0"
+        }    
     }
 }
 
 locals {
-    istio_namespace = "istio-system"
-
     modules = [
       for moduleName in split(",", var.module) : trimspace(moduleName)
     ]
@@ -63,9 +56,19 @@ provider "helm" {
 }
 
 provider "proxmox" {
-    pm_api_url            = var.api_url
-    pm_api_token_id       = var.api_token_id
-    pm_api_token_secret   = var.api_token_secret
+//    alias    = "euclid"
+    endpoint = var.proxmox.endpoint
+    insecure = var.proxmox.insecure
+
+    api_token = "${var.api_token_id}=${var.api_token_secret}"
+    ssh {
+        agent               = false
+        username            = var.proxmox.ssh_username
+        private_key         = file(var.proxmox.ssh_private_key_file)
+        socks5_server       = var.proxmox.socks5_server
+    }
+
+    tmp_dir = "/var/tmp"
 }
 
 module "k3s" {
@@ -73,63 +76,30 @@ module "k3s" {
 
     count = contains(local.modules, "k3s") ? 1 : 0
 
-    vm_server_name          = var.vm_server_name
-    vm_agent_name           = var.vm_agent_name
+    proxmox                 = var.proxmox
 
-    prox_template_vmid      = var.prox_template_vmid
-    prox_target_node        = var.prox_target_node
-    prox_storage            = var.prox_storage
-    prox_pool               = var.prox_pool
-
-    ssh_username            = var.ssh_username
-    ssh_private_key_file    = var.ssh_private_key_file
+    vm_user                 = var.vm_user
+    ssh_public_key_file     = var.vm_ssh_public_key_file
 }
 
 module "calico" {
     source = "../../common/tf/modules/calico"
 
     count = contains(local.modules, "calico") ? 1 : 0
+
+    cluster_cidr = var.cluster_cidr
+}
+
+module "cert-manager" {
+    source = "../../common/tf/modules/cert-manager"
+
+    count = contains(local.modules, "cert-manager") ? 1 : 0
 }
 
 module "istio" {
     source = "../../common/tf/modules/istio"
 
     count = contains(local.modules, "istio") ? 1 : 0
-}
-
-module "cert-manager" {
-    source = "../../common/tf/modules/cert-manager"
-
-    count = contains(local.modules, "certmgr") ? 1 : 0
-}
-
-module "certificates-module" {
-    source = "../../common/tf/modules/certificates"
-
-    count = contains(local.modules, "certificates") ? 1 : 0
-
-    istio_namespace = local.istio_namespace
-    ingress_domain  = var.ingress_domain
-}
-
-module "istio-bookinfo-module" {
-    source = "../../common/tf/modules/istio-bookinfo"
-
-    count = contains(local.modules, "istio-bookinfo") ? 1 : 0
-
-    istio_version   = "1.23"
-    istio_repo      = "https://raw.githubusercontent.com/istio/istio/release-"
-
-    istio_namespace = local.istio_namespace
-}
-
-module "istio-addons-module" {
-    source = "../../common/tf/modules/istio-addons"
-
-    count = contains(local.modules, "istio-addons") ? 1 : 0
-
-    istio_version   = "1.23"
-    istio_repo      = "https://raw.githubusercontent.com/istio/istio/release-"
 
     ingress_domain = var.ingress_domain
 }
@@ -141,3 +111,4 @@ module "k8s-dashboard" {
 
     ingress_domain = var.ingress_domain
 }
+

@@ -1,0 +1,49 @@
+#cloud-config
+users:
+  - name: ${username}
+    lock_passwd: false
+    groups: [ adm, cdrom, dip, plugdev, lxd, sudo ]
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${pub-key}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+hostname: ${hostname}
+package_update: true
+package_upgrade: true
+timezone: Europe/Belgrade
+packages:
+  - qemu-guest-agent
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gpg
+  - open-iscsi
+  - net-tools
+  - jq
+  - vim
+write_files:
+  - path: /etc/modules-load.d/k3s.conf
+    content: |
+      overlay
+      br_netfilter      
+  - path: /etc/sysctl.d/k3s.conf
+    content: |
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.ipv4.ip_forward                 = 1      
+  - path: /etc/ssh/sshd_config.d/01-harden-ssh.conf
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      ChallengeResponseAuthentication no
+power_state:
+  delay: now
+  mode: reboot
+  message: Rebooting after cloud-init completion
+  condition: true
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - localectl set-locale LANG=en_US.UTF-8
+  - modprobe overlay
+  - modprobe br_netfilter
+  - sysctl --system

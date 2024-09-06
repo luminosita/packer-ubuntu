@@ -92,3 +92,9 @@ uninstall-k3s:
 
 	sudo chmod a+x k3s/uninstall.sh && \
 		k3s/uninstall.sh
+
+delete-ns:
+	$(info k3sup: Uninstalling ...)
+
+	sudo chmod a+x k3s/delete_namespace.sh && \
+		k3s/delete_namespace.sh $(ns)
