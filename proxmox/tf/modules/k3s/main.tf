@@ -121,6 +121,10 @@ resource "proxmox_virtual_environment_vm" "k3s-ctrl-01" {
   }
 
   boot_order = ["scsi0"]
+  
+  agent {
+    enabled = true
+  }
 
   operating_system {
     type = "l26" # Linux Kernel 2.6 - 6.X.
@@ -196,7 +200,11 @@ resource "proxmox_virtual_environment_vm" "k3s-work-01" {
   }
 
   boot_order = ["scsi0"]
-
+  
+  agent {
+    enabled = true
+  }
+  
   operating_system {
     type = "l26" # Linux Kernel 2.6 - 6.X.
   }
@@ -217,30 +225,30 @@ data "proxmox_virtual_environment_hosts" "k3s-ctrl-01" {
     node_name = var.proxmox.node_name
 }
 
-resource "null_resource" "k3sup" {
-    connection {
-        type     = "ssh"
-        host     = var.proxmox.ssh_host
-        user     = var.proxmox.ssh_username
-        private_key = var.proxmox.ssh_private_key_file
-    }
+# resource "null_resource" "k3sup" {
+#     connection {
+#         type     = "ssh"
+#         host     = var.proxmox.ssh_host
+#         user     = var.proxmox.ssh_username
+#         private_key = var.proxmox.ssh_private_key_file
+#     }
 
-    provisioner "remote-exec" {
-        inline = [
-          "k3sup install --ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_server_args}"
-        ]
-    }  
+#     provisioner "remote-exec" {
+#         inline = [
+#           "k3sup install --ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_server_args}"
+#         ]
+#     }  
 
-    provisioner "remote-exec" {
-        inline = [
-          "k3sup join --ip ${proxmox_virtual_environment_vm.k3s-work-01[0].ipv4_addresses[1][0]} --server-ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_agent_args}"
-        ]
-    }
+#     provisioner "remote-exec" {
+#         inline = [
+#           "k3sup join --ip ${proxmox_virtual_environment_vm.k3s-work-01[0].ipv4_addresses[1][0]} --server-ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_agent_args}"
+#         ]
+#     }
 
-    provisioner "remote-exec" {
-        inline = [
-          "k3sup join --ip ${proxmox_virtual_environment_vm.k3s-work-01[1].ipv4_addresses[1][0]} --server-ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_agent_args}"
-        ]
-    }
-}
+#     provisioner "remote-exec" {
+#         inline = [
+#           "k3sup join --ip ${proxmox_virtual_environment_vm.k3s-work-01[1].ipv4_addresses[1][0]} --server-ip ${proxmox_virtual_environment_vm.k3s-ctrl-01.ipv4_addresses[1][0]} ${local.k3sup_agent_args}"
+#         ]
+#     }
+# }
 

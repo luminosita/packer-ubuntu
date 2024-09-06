@@ -61,11 +61,11 @@ provider "proxmox" {
     insecure = var.proxmox.insecure
 
     api_token = "${var.api_token_id}=${var.api_token_secret}"
+    
     ssh {
         agent               = false
         username            = var.proxmox.ssh_username
         private_key         = file(var.proxmox.ssh_private_key_file)
-        socks5_server       = var.proxmox.socks5_server
     }
 
     tmp_dir = "/var/tmp"
@@ -76,12 +76,12 @@ module "k3s" {
 
     count = contains(local.modules, "k3s") ? 1 : 0
 
-    proxmox                 = var.proxmox
+    proxmox                     = var.proxmox
 
-    vm_user                 = var.vm_user
-    vm_ssh_public_key_file     = var.vm_ssh_public_key_file
+    vm_user                     = var.vm_user
+    vm_ssh_public_key_file      = var.vm_ssh_public_key_file
 
-    cluster_cidr            = var.cluster_cidr
+    cluster_cidr                = var.cluster_cidr
 }
 
 module "calico" {
