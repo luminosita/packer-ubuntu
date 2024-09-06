@@ -4,7 +4,9 @@ users:
     groups: [ adm, cdrom, dip, plugdev, lxd, sudo ]
     shell: /bin/bash
     ssh_authorized_keys:
-      - ${pub-key}
+%{ for pub-key in pub-keys  ~}
+      - ${file(pub-key)}
+%{ endfor ~}
     sudo: ALL=(ALL) NOPASSWD:ALL
 hostname: ${hostname}
 package_update: true

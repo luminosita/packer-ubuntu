@@ -1,8 +1,0 @@
-installation:
-  cni:
-    type: Calico
-  calicoNetwork:
-    bgp: Disabled
-    ipPools:
-    - cidr: ${CLUSTER_CIDR}
-      encapsulation: VXLAN

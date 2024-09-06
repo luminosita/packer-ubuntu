@@ -10,8 +10,16 @@ variable "proxmox" {
     })
 }
 
-variable "module" {
-  type = string
+variable "k3s" {
+    type        = object({
+        vm_user = string
+        vm_ssh_public_key_files = list(string)
+
+        version           = string
+        cluster_cidr      = string
+        ingress_domain    = string
+        kube_config_file  = string
+    })
 }
 
 ###############################  API ##############################
@@ -24,27 +32,9 @@ variable "api_token_secret" {
 }
 
 ###############################  VM Settings ##############################
-variable "vm_user" {
-  description = "VM username"
-  type        = string
-}
 
-variable "vm_ssh_public_key_file" {
-    type = string
+locals {
+    //hardcoded MAC address for Mikrotik router statis lease
+    ctrl_mac_address = ["BC:24:11:BD:3C:67"]
+    work_mac_address = ["BC:24:11:A9:6A:39","BC:24:11:57:11:94"]
 }
-
-###############################  K3s Settings ##############################
-variable "k3s_version" {
-  type = string
-  default = "v1.30"
-}
-
-variable "ingress_domain" {
-  type = string
-  default = "k3s.lan"
-}
-
-variable "cluster_cidr" {
-  type = string
-}
-
