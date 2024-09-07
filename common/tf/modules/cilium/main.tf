@@ -15,10 +15,9 @@ resource "helm_release" "cilium" {
     create_namespace  = true
     namespace         = "kube-system"
 
-    values = [
-        "k8sServiceHost: ${var.cluster.ctrl_ips[0]}",
-        "k8sServicePort: 6443",
-        "kubeProxyReplacement: true"
+    values = ["${templatefile("${path.module}/resources/values.yaml.tftpl", {
+        ctrl_ip = var.cluster.ctrl_ips[0]
+        })}"
     ]
 }
 

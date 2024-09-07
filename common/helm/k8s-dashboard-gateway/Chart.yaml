@@ -1,0 +1,9 @@
+apiVersion: v2
+name: k8s-dashboard-gateway
+description: A Helm chart for Kubernetes Dashboard Gateway
+
+type: application
+
+version: 0.1.0
+
+appVersion: "7.5.0"

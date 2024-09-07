@@ -262,7 +262,7 @@ resource "proxmox_virtual_environment_vm" "k3s-work" {
 }
 
 module "k3s" {
-    source = "./modules/k3s"
+    source = "../../common/tf/modules/k3s"
 
     k3s     = var.k3s
 
@@ -272,16 +272,14 @@ module "k3s" {
     }
 }
 
-# module "cert-manager" {
-#     source = "../../common/tf/modules/cert-manager"
-
-#     count = contains(local.modules, "cert-manager") ? 1 : 0
-# }
+module "cert-manager" {
+    depends_on = [ module.k3s ]
+    source = "../../common/tf/modules/cert-manager"
+}
 
 # module "k8s-dashboard" {
+#     depends_on = [ module.cert-manager ]
 #     source = "../../common/tf/modules/k8s-dashboard"
-
-#     count = contains(local.modules, "k8s-dashboard") ? 1 : 0
 
 #     ingress_domain = var.k3s.ingress_domain
 # }
