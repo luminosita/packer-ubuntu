@@ -31,10 +31,3 @@ variable "api_token_secret" {
     type    = string
 }
 
-###############################  VM Settings ##############################
-
-locals {
-    //hardcoded MAC address for Mikrotik router statis lease
-    ctrl_mac_address = ["BC:24:11:BD:3C:67"]
-    work_mac_address = ["BC:24:11:A9:6A:39","BC:24:11:57:11:94"]
-}

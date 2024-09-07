@@ -1,61 +1,11 @@
 terraform {
-    required_version = ">= 1.9.5"
-
     required_providers {
-        kubernetes = {
-            source  = "hashicorp/kubernetes"
-            version = ">= 2.32.0"
-        }
-
-        local = {
-            source  = "hashicorp/local"
-            version = ">= 2.5.1"
-        }
-
-        helm = {
-            source  = "hashicorp/helm"
-            version = ">= 2.15.0"
-        }
-
-        null = {
-            source  = "hashicorp/null"
-            version = ">= 3.2.2"
-        }
-
         proxmox = {
             source  = "bpg/proxmox"
-            version = "0.63.0"
         }    
     }
 }
 
-provider "kubernetes" {
-    config_path    = var.k3s.kube_config_file
-    config_context = "default"
-}
-
-provider "helm" {
-    kubernetes {
-        config_path    = var.k3s.kube_config_file
-        config_context = "default"
-    }
-}
-
-provider "proxmox" {
-//    alias    = "euclid"
-    endpoint = var.proxmox.endpoint
-    insecure = var.proxmox.insecure
-
-    api_token = "${var.api_token_id}=${var.api_token_secret}"
-    
-    ssh {
-        agent               = false
-        username            = var.proxmox.ssh_username
-        private_key         = file(var.proxmox.ssh_private_key_file)
-    }
-
-    tmp_dir = "/var/tmp"
-}
 
 resource "proxmox_virtual_environment_download_file" "ubuntu_2404_generic_image" {
 //    provider     = proxmox.euclid
@@ -77,8 +27,8 @@ resource "proxmox_virtual_environment_file" "cloud-init-ctrl" {
     datastore_id = "local"
 
     source_raw {
-        data = templatefile("../cloud-init/k3s-control-plane.yaml.tftpl", {
-            common-config = templatefile("../cloud-init/k3s-common.yaml.tftpl", {
+        data = templatefile("../../cloud-init/k3s-control-plane.yaml.tftpl", {
+            common-config = templatefile("../../cloud-init/k3s-common.yaml.tftpl", {
                 hostname      = "k3s-ctrl-0${count.index+1}"
                 username      = var.k3s.vm_user
                 pub-keys      = var.k3s.vm_ssh_public_key_files
@@ -97,8 +47,8 @@ resource "proxmox_virtual_environment_file" "cloud-init-work" {
     datastore_id = "local"
 
     source_raw {
-        data = templatefile("../cloud-init/k3s-worker.yaml.tftpl", {
-            common-config = templatefile("../cloud-init/k3s-common.yaml.tftpl", {
+        data = templatefile("../../cloud-init/k3s-worker.yaml.tftpl", {
+            common-config = templatefile("../../cloud-init/k3s-common.yaml.tftpl", {
             hostname    = "k3s-work-0${count.index+1}"
             username    = var.k3s.vm_user
             pub-keys    = var.k3s.vm_ssh_public_key_files
@@ -260,27 +210,3 @@ resource "proxmox_virtual_environment_vm" "k3s-work" {
         user_data_file_id = proxmox_virtual_environment_file.cloud-init-work[count.index].id
     }
 }
-
-module "k3s" {
-    source = "../../common/tf/modules/k3s"
-
-    k3s     = var.k3s
-
-    cluster = {
-        ctrl_ips = proxmox_virtual_environment_vm.k3s-ctrl[*].ipv4_addresses[1][0]
-        work_ips = proxmox_virtual_environment_vm.k3s-work[*].ipv4_addresses[1][0]
-    }
-}
-
-module "cert-manager" {
-    depends_on = [ module.k3s ]
-    source = "../../common/tf/modules/cert-manager"
-}
-
-# module "k8s-dashboard" {
-#     depends_on = [ module.cert-manager ]
-#     source = "../../common/tf/modules/k8s-dashboard"
-
-#     ingress_domain = var.k3s.ingress_domain
-# }
-

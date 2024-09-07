@@ -22,18 +22,8 @@ resource "null_resource" "k3sup-ctrl" {
     }  
 }
 
-module "cilium" {
-    depends_on = [ null_resource.k3sup-ctrl ]
-    source = "../../../../common/tf/modules/cilium"
-
-    k3s     = var.k3s
-
-    cluster = var.cluster
-}
-
 resource "null_resource" "k3sup-work" {
-    depends_on = [ module.cilium ]
-
+    depends_on = [ null_resource.k3sup-ctrl ]
     count = length(var.cluster.work_ips)
     provisioner "local-exec" {
         command = "k3sup join --ip ${var.cluster.work_ips[count.index]} --server-ip ${var.cluster.ctrl_ips[0]} ${local.k3sup_work_args}"

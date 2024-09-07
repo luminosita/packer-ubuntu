@@ -1,0 +1,20 @@
+apiVersion: "networking.istio.io/v1beta1"
+kind: "VirtualService"
+metadata: 
+    name: "kubernetes-dashboard"
+    namespace: {{ .Release.Namespace }}
+spec: 
+    hosts: 
+        - {{ .Values.dashboard_domain_domain }}
+    gateways: 
+        - {{ print "%s/public-gateway" .Values.gateway_namespace }} 
+    tls: 
+        match: 
+            - port: "443"
+              sniHosts: 
+                  - {{ .Values.dashboard_domain_domain }}
+        route:
+            - destination: 
+                  host: {{ .Values.istio_dashboard_service }}
+                  port: 
+                      - number: "443"
