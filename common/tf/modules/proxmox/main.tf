@@ -27,8 +27,8 @@ resource "proxmox_virtual_environment_file" "cloud-init-ctrl" {
     datastore_id = "local"
 
     source_raw {
-        data = templatefile("../../cloud-init/k3s-control-plane.yaml.tftpl", {
-            common-config = templatefile("../../cloud-init/k3s-common.yaml.tftpl", {
+        data = templatefile("${path.module}/resources/cloud-init/k3s-control-plane.yaml.tftpl", {
+            common-config = templatefile("${path.module}/resources/cloud-init/k3s-common.yaml.tftpl", {
                 hostname      = "k3s-ctrl-0${count.index+1}"
                 username      = var.k3s.vm_user
                 pub-keys      = var.k3s.vm_ssh_public_key_files
@@ -47,8 +47,8 @@ resource "proxmox_virtual_environment_file" "cloud-init-work" {
     datastore_id = "local"
 
     source_raw {
-        data = templatefile("../../cloud-init/k3s-worker.yaml.tftpl", {
-            common-config = templatefile("../../cloud-init/k3s-common.yaml.tftpl", {
+        data = templatefile("${path.module}/resources/cloud-init/k3s-worker.yaml.tftpl", {
+            common-config = templatefile("${path.module}/resources/cloud-init/k3s-common.yaml.tftpl", {
             hostname    = "k3s-work-0${count.index+1}"
             username    = var.k3s.vm_user
             pub-keys    = var.k3s.vm_ssh_public_key_files

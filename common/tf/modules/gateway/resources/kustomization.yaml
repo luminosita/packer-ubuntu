@@ -3,6 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - ns.yaml
   - gateway-class.yaml
 #  - sealed-cloudflare-api-token.yaml
 #  - cloudflare-api-token.yaml

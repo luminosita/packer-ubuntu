@@ -1,0 +1,14 @@
+# pod.yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: simple-pod
+    namespace: default
+    labels:
+      app: simple-pod
+  spec:
+    containers:
+    - name: my-app-container
+      image: nginx:latest
+      ports:
+      - containerPort: 80

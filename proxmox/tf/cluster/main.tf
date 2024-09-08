@@ -76,9 +76,23 @@ module "cilium" {
     ctrl_ip = module.proxmox.ip_addresses.ctrl_ips[0]
 }
 
+module "cert_manager" {
+    count = contains(local.modules, "network") ? 1 : 0
+
+    source = "../../../common/tf/modules/cert-manager"
+}
+
 module "gateway" {
     count = contains(local.modules, "network") ? 1 : 0
 
     source = "../../../common/tf/modules/gateway"
 }
+
+module "test-app" {
+    count = contains(local.modules, "test") ? 1 : 0
+
+    source = "../../../common/tf/modules/testapp"
+}
+
+
 
