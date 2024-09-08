@@ -1,0 +1,26 @@
+# gateway/gateway-with-infrastructure.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: http-gateway
+  namespace: gateway
+spec:
+  gatewayClassName: cilium
+  # infrastructure:
+  #   annotations:
+  #     io.cilium/lb-ipam-ips: "192.168.50.54" ###TODO to be validated
+  listeners:
+    - protocol: HTTP
+      port: 80
+      name: http-gateway-listener
+      # hostname: "*.emisia.net"
+      allowedRoutes:
+        namespaces:
+          from: All
+    # - protocol: HTTP
+    #   port: 80
+    #   name: http-domain-gateway-listener
+    #   hostname: "emisia.net"
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: All

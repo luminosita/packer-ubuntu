@@ -1,14 +1,12 @@
-# service.yaml
-  apiVersion: v1
-  kind: Service
-  metadata:
-    name: my-service
-    namespace: default
-  spec:
-    selector:
-      app: simple-pod  # Make sure this matches the label of the Pod
-    ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 80
-    type: LoadBalancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: whoami

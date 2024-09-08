@@ -1,7 +1,7 @@
 terraform {
     required_providers {
-        helm = {
-            source  = "hashicorp/helm"
+        kustomization = {
+            source = "kbst/kustomization"
         }
         kubernetes = {
             source  = "hashicorp/kubernetes"
@@ -11,21 +11,6 @@ terraform {
 
 locals {
     dash_ns = "kubernetes-dashboard"
-}
-
-resource "helm_release" "kubernetes-dashboard" {
-    name        = "kubernetes-dashboard"
-    repository  = "https://kubernetes.github.io/dashboard/"
-    chart       = "kubernetes-dashboard"
-    version     = "7.5.0"
-
-    create_namespace  = true
-    namespace         = local.dash_ns
-
-    set {
-        name  = "crds.enabled"
-        value = "true"
-    }
 }
 
 resource "kubernetes_labels" "kubernetes_dashboard_namespace_istio_injection" {
@@ -41,12 +26,13 @@ resource "kubernetes_labels" "kubernetes_dashboard_namespace_istio_injection" {
     }
 }
 
-resource "helm_release" "kubernetes-gateway" {
-    name        = "k8s-dashboard-gateway"
-    chart       = "${path.root}/../../common/helm/k8s-dashboard-gateway"
-    version     = "0.1.0"
+data "kustomization_build" "dashboard" {
+    path = "${path.module}/resources"
+}
 
-    create_namespace  = true
-    namespace   = local.dash_ns
+resource "kustomization_resource" "dashboard" {
+    for_each = data.kustomization_build.dashboard.ids
+
+    manifest = data.kustomization_build.dashboard.manifests[each.value]
 }
 

@@ -1,0 +1,21 @@
+#gateway/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ns.yaml
+  - service-account.yaml
+  - cluster-role-binding.yaml
+
+
+helmCharts:
+  - name: kubernetes-dashboard
+    repo: "https://kubernetes.github.io/dashboard/"
+    releaseName: kubernetes-dashboard
+    namespace: kubernetes-dashboard
+    version: 7.5.0
+    includeCRDs: true
+    # valuesInline: 
+    #   crds:
+    #     enabled: true
+

@@ -6,6 +6,10 @@ terraform {
             source = "kbst/kustomization"
             version = "0.9.6"
         }
+        kubernetes = {
+            source = "hashicorp/kubernetes"
+            version = "2.32.0"
+        }
         helm = {
             source  = "hashicorp/helm"
             version = ">= 2.15.0"
@@ -25,6 +29,11 @@ terraform {
             version = "0.63.0"
         }    
     }
+}
+
+provider "kubernetes" {
+    config_path    = var.k3s.kube_config_file
+    config_context = "default"
 }
 
 provider "helm" {
@@ -69,7 +78,7 @@ module "k3s" {
 }
 
 module "cilium" {
-    count = contains(local.modules, "network") ? 1 : 0
+    count = contains(local.modules, "network") || contains(local.modules, "all") ? 1 : 0
 
     source = "../../../common/tf/modules/cilium"
 
@@ -77,22 +86,27 @@ module "cilium" {
 }
 
 module "cert_manager" {
-    count = contains(local.modules, "network") ? 1 : 0
+    count = contains(local.modules, "network") || contains(local.modules, "all") ? 1 : 0
 
     source = "../../../common/tf/modules/cert-manager"
 }
 
 module "gateway" {
-    count = contains(local.modules, "network") ? 1 : 0
+    count = contains(local.modules, "gateway") || contains(local.modules, "all")  ? 1 : 0
 
     source = "../../../common/tf/modules/gateway"
 }
 
 module "test-app" {
-    count = contains(local.modules, "test") ? 1 : 0
+    count = contains(local.modules, "test") || contains(local.modules, "all")  ? 1 : 0
 
     source = "../../../common/tf/modules/testapp"
 }
 
+# module "k8s-dashboard" {
+#     count = contains(local.modules, "test") || contains(local.modules, "all")  ? 1 : 0
+
+#     source = "../../../common/tf/modules/k8s-dashboard"
+# }
 
 

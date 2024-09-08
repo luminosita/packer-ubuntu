@@ -31,7 +31,7 @@ data "kustomization_overlay" "cilium" {
         release_name = "cilium"
         namespace = "kube-system"
         include_crds = true
-        values_inline = templatefile("${path.module}/resources/values.yaml.tftpl", {
+        values_inline = templatefile("${path.module}/resources/values.tftpl", {
             ctrl_ip = var.ctrl_ip
         })
     }

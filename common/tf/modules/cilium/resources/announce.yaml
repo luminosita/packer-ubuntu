@@ -3,5 +3,7 @@ kind: CiliumL2AnnouncementPolicy
 metadata:
   name: default-l2-announcement-policy
 spec:
+  interfaces:
+    - eth0
   externalIPs: true
   loadBalancerIPs: true

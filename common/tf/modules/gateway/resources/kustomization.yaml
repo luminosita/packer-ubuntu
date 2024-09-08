@@ -4,9 +4,9 @@ kind: Kustomization
 
 resources:
   - ns.yaml
-  - gateway-class.yaml
+#  - gateway-class.yaml
 #  - sealed-cloudflare-api-token.yaml
-#  - cloudflare-api-token.yaml
-#  - cloudflare-issuer.yaml
-#  - gateway-with-infrastructure.yaml
-  - gateway-test.yaml
+  - cloudflare-api-token.yaml
+  - cloudflare-issuer.yaml
+  - tls-gateway.yaml
+  - http-gateway.yaml
