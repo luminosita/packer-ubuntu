@@ -14,8 +14,7 @@
 TF_VARS:=./vars/ubuntu-noble-k3s.tfvars
 TF_PLAN:=./k3s.tfplan
 
-TF_INFRA:=./tf/infrastructure
-TF_CLUSTER:=./tf/cluster
+TF_INFRA:=./tf/cluster
 
 K3S_FOLDER:=./k3s/
 
@@ -23,75 +22,39 @@ include common.mk
 
 #TERRAFORM
 
-init-infra: delete-infra
+init-tf: delete-tf
 	$(info TERRAFORM: Init Terraform plugins for $(TF_WORKSPACE))
 
 	cd ${TF_INFRA} && \
 	terraform init && \
 	terraform workspace new $(TF_WORKSPACE);\
 
-delete-infra:
+delete-tf:
 	$(info TERRAFORM: Delete Terraform folder)
 	
 	cd ${TF_INFRA} && \
 	rm -rf .terraform .terraform.lock.hcl terraform.tfstate.d
 
-plan-infra: 
+plan: 
 	$(info TERRAFORM: Plan for $(TF_WORKSPACE))
 	
 	cd ${TF_INFRA} && \
 	terraform workspace select $(TF_WORKSPACE) && \
     terraform plan -var-file=${TF_VARS} -out=${TF_PLAN};
 
-apply-infra:
+apply:
 	$(info TERRAFORM: Apply for $(TF_WORKSPACE))
 
 	cd ${TF_INFRA} && \
 	terraform workspace select $(TF_WORKSPACE) && \
     terraform apply ${TF_PLAN};
 
-plan-destroy-infra:
+plan-destroy:
 	$(info TERRAFORM: Apply for $(TF_WORKSPACE))
 
 	cd ${TF_INFRA} && \
 	terraform workspace select $(TF_WORKSPACE) && \
     terraform plan -destroy -var-file=${TF_VARS} -out=${TF_PLAN}
-
-
-init-cluster: delete-cluster
-	$(info TERRAFORM: Init Terraform plugins for $(TF_WORKSPACE))
-
-	cd ${TF_CLUSTER} && \
-	terraform init && \
-	terraform workspace new $(TF_WORKSPACE);\
-
-delete-cluster:
-	$(info TERRAFORM: Delete Terraform folder)
-	
-	cd ${TF_CLUSTER} && \
-	rm -rf .terraform .terraform.lock.hcl terraform.tfstate.d
-
-plan-cluster: 
-	$(info TERRAFORM: Plan for $(TF_WORKSPACE))
-	
-	cd ${TF_CLUSTER} && \
-	terraform workspace select $(TF_WORKSPACE) && \
-    terraform plan -var-file=${TF_VARS} -out=${TF_PLAN};
-
-apply-cluster:
-	$(info TERRAFORM: Apply for $(TF_WORKSPACE))
-
-	cd ${TF_CLUSTER} && \
-	terraform workspace select $(TF_WORKSPACE) && \
-    terraform apply ${TF_PLAN};
-
-plan-destroy-cluster:
-	$(info TERRAFORM: Apply for $(TF_WORKSPACE))
-
-	cd ${TF_CLUSTER} && \
-	terraform workspace select $(TF_WORKSPACE) && \
-    terraform plan -destroy -var-file=${TF_VARS} -out=${TF_PLAN}
-
 
 #k3sup
 install-k3s:

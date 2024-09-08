@@ -1,29 +1,3 @@
-# terraform {
-#     required_providers {
-#         kustomization = {
-#             source = "kbst/kustomization"
-#             version = "0.9.6"
-#         }
-#     }
-# }
-
-# data "kustomization_build" "cert_manager" {
-#     kustomize_options {
-#         enable_helm = true
-#         helm_path = "helm"
-#         load_restrictor = "none"
-#     }
-
-#     path = "${path.module}/resources"
-# }
-
-# resource "kustomization_resource" "cilium" {
-#     for_each = data.kustomization_build.cert_manager.ids
-
-#     manifest = data.kustomization_build.cert_manager.manifests[each.value]
-# }
-
-
 terraform {
     required_providers {
         helm = {

@@ -13,10 +13,10 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_2404_generic_image"
     content_type = "iso"
     datastore_id = "local"
 
-    file_name          = "noble-server-cloudimg-amd64.img"
-    url                = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-    checksum           = "ffafb396efb0f01b2c0e8565635d9f12e51a43c51c6445fd0f84ad95c7f74f9b"
-    checksum_algorithm = "sha256"
+    file_name          = var.k3s.vm_base_image
+    url                = var.k3s.vm_base_url
+    checksum           = var.k3s.vm_base_image_checksum
+    checksum_algorithm = var.k3s.vm_base_image_checksum_alg
 }
 	
 resource "proxmox_virtual_environment_file" "cloud-init-ctrl" {

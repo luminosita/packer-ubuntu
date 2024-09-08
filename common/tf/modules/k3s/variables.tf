@@ -1,11 +1,15 @@
 variable "k3s" {
     type        = object({
+        vm_base_url                 = string
+        vm_base_image               = string
+        vm_base_image_checksum      = string
+        vm_base_image_checksum_alg  = string
+
         vm_user = string
         vm_ssh_public_key_files = list(string)
 
         version           = string
         cluster_cidr      = string
-        ingress_domain    = string
         kube_config_file  = string
     })
 }
