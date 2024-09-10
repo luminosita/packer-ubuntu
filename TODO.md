@@ -1,3 +1,11 @@
+# K8s (Proxmox VMs and DigitalOcean for true HA)
+- [x] Ansible
+- [x] Terraform
+- [ ] Network
+- [ ] Storage
+- [ ] Health Checks (https://blog.kubecost.com/blog/kubernetes-health-check/)
+- [ ] Ingress
+
 ## Terraform
 - [ ] Verify CLUSTER-CIDR
 
